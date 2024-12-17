@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Bluebook Cite</Text>
+      <Text>Bluebook Cite - test to see if this works</Text>
     </View>
   );
 }
