@@ -13,106 +13,11 @@ import globalStyle from "../utils/styles";
 import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
 import { useState } from "react";
-import axios from "axios";
+import { handleGenerateCitation } from "../utils/api";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
   const [response, setResponse] = useState("Response Placeholder"); // State to store API response
-
-  async function handleGenerateCitation() {
-    if (!inputText.trim()) {
-      setResponse("Please enter text to generate a citation.");
-      return;
-    }
-
-    try {
-      // Step 1: Create the thread
-      const threadRes = await axios.post(
-        "https://api.openai.com/v1/threads",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-            "Content-Type": "application/json",
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-
-      const threadId = threadRes.data.id;
-      console.log("ThreadID", threadId);
-
-      // Step 2: Send content
-      await axios.post(
-        `https://api.openai.com/v1/threads/${threadId}/messages`,
-        { role: "user", content: inputText },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-            "Content-Type": "application/json",
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-
-      console.log("Step 2 complete");
-
-      // Step 3: Engage Assitant API
-      const runRes = await axios.post(
-        `https://api.openai.com/v1/threads/${threadId}/runs`,
-        { assistant_id: `${process.env.EXPO_PUBLIC_ASSISTANT_ID}` },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-            "Content-Type": "application/json",
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-
-      console.log("Step 3 complete");
-
-
-    // Step 4: Poll for the response
-    let assistantMessage;
-    while (true) {
-      const messagesRes = await axios.get(
-        `https://api.openai.com/v1/threads/${threadId}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-
-      const messages = messagesRes.data.data;
-      console.log("Messages", messages);
-
-      assistantMessage = messages.find(
-        (msg) => msg.role === "assistant" && msg.content?.length > 0
-      );
-
-      if (assistantMessage) break;
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-
-    console.log("Step 4 complete");
-
-    // Step 5: Extract the assistant's response
-    const contentText = assistantMessage.content.find(
-      (item) => item.type === "text"
-    );
-
-    const citation = contentText?.text?.value || "No citation found.";
-    console.log("Citation:", citation);
-    setResponse(citation);
-    } catch (error) {
-      console.error("Error generating citation:", error);
-      setResponse("Failed to generate citation. Please try again.");
-    }
-  }
 
   return (
     <SafeAreaProvider>
@@ -133,7 +38,9 @@ export default function Index() {
           <View style={s.responseContainer}>
             <Text>{response}</Text>
           </View>
+          <Text style={globalStyle.text}>Enter book details</Text>
           <TextInputField onTextChange={setInputText} />
+          <Text style={globalStyle.text}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
             <UploadButton option={"camera"} isEnabled={true} />
             <UploadButton option={"photo"} isEnabled={true} />
@@ -142,7 +49,7 @@ export default function Index() {
           <GenerateButton
             btnText={"Generate Citation"}
             isEnabled={true}
-            onPress={handleGenerateCitation}
+            onPress={() => handleGenerateCitation(inputText, setResponse)}
           />
         </SafeAreaView>
       </TouchableWithoutFeedback>
