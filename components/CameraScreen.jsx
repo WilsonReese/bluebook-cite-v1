@@ -1,30 +1,15 @@
 import React, { useState } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { StyleSheet, Text, TouchableOpacity, View, Button } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Button, Linking } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import globalStyle from "../utils/styles";
+import CameraPermissions from "./CameraPermissions";
 
 export default function CameraScreen({ onClose, onPictureTaken }) {
-  // const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
 
-  if (!permission) {
-    return <View />;
-  }
-
-  if (!permission.granted) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
-      </View>
-    );
-  }
-
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
+  if (!permission?.granted) {
+    return <CameraPermissions permission={permission} requestPermission={requestPermission} onClose={onClose}/>;
   }
 
   function takePicture() {
@@ -38,8 +23,8 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
       <CameraView style={s.camera} facing={"back"}>
         <View style={s.overlayContainer}>
           <View style={s.closeButtonContainer}>
-            <TouchableOpacity>
-              <FontAwesome name="close" size={32} color="#F8F8F8" />
+            <TouchableOpacity onPress={onClose}>
+              <FontAwesome name="close" size={24} color="#F8F8F8" />
 							{/* <Text style={[globalStyle.text, {fontSize: 32, color: '#F8F8F8'}]}>X</Text> */}
             </TouchableOpacity>
           </View>
@@ -49,17 +34,6 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <View style={s.buttonContainer}>
-          <TouchableOpacity style={s.button} onPress={toggleCameraFacing}>
-            <Text style={s.text}>Flip Camera</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={s.button} onPress={takePicture}>
-            <Text style={s.text}>Take Picture</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={s.button} onPress={onClose}>
-            <Text style={s.text}>Close Camera</Text>
-          </TouchableOpacity>
-        </View> */}
       </CameraView>
     </View>
   );
@@ -68,6 +42,7 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
 const s = StyleSheet.create({
   container: {
     flex: 1,
+		justifyContent: 'center'
   },
   message: {
     textAlign: "center",
@@ -83,7 +58,7 @@ const s = StyleSheet.create({
   },
   closeButtonContainer: {
     alignItems: "flex-end",
-		padding: 16,
+		padding: 24,
   },
   captureContainer: {
     alignItems: "center",

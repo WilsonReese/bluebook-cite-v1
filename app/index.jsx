@@ -39,7 +39,7 @@ export default function Index() {
   };
 
   if (isCameraOpen) {
-    return <CameraScreen onCapture={handleCapture} />;
+    return <CameraScreen onCapture={handleCapture} onClose={closeCamera} />;
   }
 
   return (
