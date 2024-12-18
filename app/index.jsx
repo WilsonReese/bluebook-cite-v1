@@ -3,6 +3,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import TextInputField from "../components/TextInputField";
 import globalStyle from "../utils/styles";
 import UploadButton from "../components/UploadButton";
+import GenerateButton from "../components/GenerateButton";
 
 
 export default function Index() {
@@ -11,7 +12,7 @@ export default function Index() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.titleContainer}>
-            <Text style={globalStyle.titleText}>Bluebook Cite</Text>
+            <Text style={globalStyle.titleText}>Bluebook Citation Generator</Text>
           </View>
           <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
@@ -29,9 +30,7 @@ export default function Index() {
             <UploadButton icon={'photo'} isEnabled={true}/>
             <UploadButton icon={'file'} isEnabled={true}/>
           </View>
-          <View style={s.generateButtonContainer}>
-            <Text>Generate citation</Text>
-          </View>
+          <GenerateButton btnText={'Generate Citation'} isEnabled={true}/>
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </SafeAreaProvider>

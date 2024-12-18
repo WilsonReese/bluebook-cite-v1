@@ -3,11 +3,12 @@ import { StyleSheet } from "react-native";
 const globalStyle = StyleSheet.create({
   text: {
     fontFamily: "Figtree_400Regular",
-    color: "#000",
+    color: "#061826",
   },
   titleText: {
     fontSize: 24,
     fontFamily: "STIXTwoText_700Bold",
+    color: '#184EAD'
   },
 });
 

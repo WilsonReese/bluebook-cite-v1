@@ -2,19 +2,12 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import globalStyle from "../utils/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export default function UploadButton({
-  icon,
+export default function GenerateButton({
+  btnText,
   isEnabled,
   style,
   onPress,
 }) {
-  const icons = {
-    photo: <FontAwesome name="photo" size={24} color="#5996FF" />,
-    camera: <FontAwesome name="camera" size={24} color="#5996FF" />,
-    file: <FontAwesome name="file-o" size={24} color="#5996FF" />,
-  };
-
-  const displayedIcon = icons[icon] || <Text>?</Text>;
 
   function checkIfEnabled() {
     return isEnabled ? s.enabled : s.disabled;
@@ -30,27 +23,29 @@ export default function UploadButton({
       ]}
       onPress={isEnabled ? onPress : null}
     >
-      <View>{displayedIcon}</View>
+      <View>
+				<Text style={[globalStyle.text, s.btnText]}>{btnText}</Text>
+			</View>
     </Pressable>
   );
 }
 
 const s = StyleSheet.create({
   btn: {
-    flex: 1,
+    // flex: 1,
     paddingHorizontal: 8,
+		alignSelf: 'stretch',
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    marginHorizontal: 4,
-    height: 80,
+    height: 60,
     borderRadius: 8,
   },
   disabled: {
-    backgroundColor: "#DAE1E5",
+    backgroundColor: "#B8C3CC",
   },
   enabled: {
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#184EAD",
     borderColor: "#B8C3CC",
     //shadow
     // shadowColor: "#000",
@@ -62,5 +57,9 @@ const s = StyleSheet.create({
     // shadowRadius: 2.22,
 
     // elevation: 3,
+  },
+  btnText: {
+    fontSize: 16,
+		color: '#F8F8F8'
   },
 });
