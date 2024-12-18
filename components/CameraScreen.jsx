@@ -23,7 +23,7 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
       <CameraView style={s.camera} facing={"back"}>
         <View style={s.overlayContainer}>
           <View style={s.closeButtonContainer}>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onClose} style={s.closeButton}>
               <FontAwesome name="close" size={24} color="#F8F8F8" />
 							{/* <Text style={[globalStyle.text, {fontSize: 32, color: '#F8F8F8'}]}>X</Text> */}
             </TouchableOpacity>
@@ -58,6 +58,8 @@ const s = StyleSheet.create({
   },
   closeButtonContainer: {
     alignItems: "flex-end",
+  },
+  closeButton: {
 		padding: 24,
   },
   captureContainer: {
