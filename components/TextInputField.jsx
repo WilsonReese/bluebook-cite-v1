@@ -1,12 +1,12 @@
 import { StyleSheet, TextInput, View } from "react-native";
-import style from "../utils/styles";
+import globalStyle from "../utils/styles";
 
 
 export default function TextInputField() {
   return (
     <View style={s.inputContainer}>
       <TextInput
-        style={[s.textInput, style.text]}
+        style={[s.textInput, globalStyle.text]}
         placeholder="To Kill a Mockingbird by Harper Lee"
         placeholderTextColor="#B8C3CC"
       />

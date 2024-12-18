@@ -2,6 +2,7 @@ import { Keyboard, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View }
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import TextInputField from "../components/TextInputField";
 import globalStyle from "../utils/styles";
+import UploadButton from "../components/UploadButton";
 
 export default function Index() {
   return (
@@ -20,15 +21,9 @@ export default function Index() {
           </View>
           <TextInputField/>
           <View style={s.uploadContainer}>
-            <View style={s.uploadButtonContainer}>
-              <Text>Button to add picture (camera)</Text>
-            </View>
-            <View style={s.uploadButtonContainer}>
-              <Text>Button to add picture (photos)</Text>
-            </View>
-            <View style={s.uploadButtonContainer}>
-              <Text>Button to add file</Text>
-            </View>
+            <UploadButton/>
+            <UploadButton/>
+            <UploadButton/>
           </View>
           <View style={s.generateButtonContainer}>
             <Text>Generate citation</Text>
@@ -42,34 +37,23 @@ export default function Index() {
 const s = StyleSheet.create({
   safeAreaContainer: {
     flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#DAE1E5",
     padding: 8,
   },
   titleContainer: {
-    // flex: 1,
-    // justifyContent: 'center',
     paddingVertical: 16,
-    // backgroundColor: "green",
   },
   instructionsContainer: {
-    // flex: 1,
-    // justifyContent: 'center',
     paddingVertical: 16,
-    // backgroundColor: "blue",
   },
   uploadContainer: {
     flexDirection: "row",
     backgroundColor: "yellow",
-    justifyContent: "center",
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
     paddingVertical: 16,
-  },
-  uploadButtonContainer: {
-    flex: 1,
-    backgroundColor: "pink",
-    paddingHorizontal: 8,
-    alignItems: "center",
+    // width: '100%',
   },
   generateButtonContainer: {
     paddingVertical: 16,
