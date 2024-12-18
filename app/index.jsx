@@ -26,9 +26,9 @@ export default function Index() {
           </View>
           <TextInputField/>
           <View style={s.uploadContainer}>
-            <UploadButton icon={'camera'} isEnabled={true}/>
-            <UploadButton icon={'photo'} isEnabled={true}/>
-            <UploadButton icon={'file'} isEnabled={true}/>
+            <UploadButton option={'camera'} isEnabled={true}/>
+            <UploadButton option={'photo'} isEnabled={true}/>
+            <UploadButton option={'file'} isEnabled={true}/>
           </View>
           <GenerateButton btnText={'Generate Citation'} isEnabled={true}/>
         </SafeAreaView>

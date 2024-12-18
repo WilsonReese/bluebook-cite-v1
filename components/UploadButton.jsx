@@ -3,7 +3,7 @@ import globalStyle from "../utils/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function UploadButton({
-  icon,
+  option,
   isEnabled,
   style,
   onPress,
@@ -13,8 +13,15 @@ export default function UploadButton({
     camera: <FontAwesome name="camera" size={24} color="#5996FF" />,
     file: <FontAwesome name="file-o" size={24} color="#5996FF" />,
   };
+	const displayedIcon = icons[option] || <Text>?</Text>;
+	
+	const textOptions = {
+		photo: (<Text>Upload Photo</Text>),
+    camera: (<Text>Take Picture</Text>),
+    file: (<Text>Upload PDF</Text>),
+	}
+	const displayedText = textOptions[option] || <Text>?</Text>;
 
-  const displayedIcon = icons[icon] || <Text>?</Text>;
 
   function checkIfEnabled() {
     return isEnabled ? s.enabled : s.disabled;
@@ -30,7 +37,10 @@ export default function UploadButton({
       ]}
       onPress={isEnabled ? onPress : null}
     >
-      <View>{displayedIcon}</View>
+      <View>
+				{displayedIcon}
+				{/* <Text>{displayedText}</Text> */}
+			</View>
     </Pressable>
   );
 }

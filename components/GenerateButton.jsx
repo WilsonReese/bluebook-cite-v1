@@ -46,7 +46,7 @@ const s = StyleSheet.create({
   },
   enabled: {
     backgroundColor: "#184EAD",
-    borderColor: "#B8C3CC",
+    borderColor: "#184EAD",
     //shadow
     // shadowColor: "#000",
     // shadowOffset: {
@@ -59,7 +59,8 @@ const s = StyleSheet.create({
     // elevation: 3,
   },
   btnText: {
-    fontSize: 16,
+    fontFamily: 'Figtree_600SemiBold',
+		fontSize: 16,
 		color: '#F8F8F8'
   },
 });
