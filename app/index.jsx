@@ -164,7 +164,7 @@ const s = StyleSheet.create({
     paddingVertical: 16,
   },
   responseContainer: {
-    height: 200,
+    height: 60,
     justifyContent: "center",
     borderWidth: 1,
     alignSelf: "stretch",
