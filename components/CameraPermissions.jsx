@@ -19,7 +19,7 @@ export default function CameraPermissions({ permission, requestPermission, onClo
       return (
         <View style={s.container}>
           <TouchableOpacity style={s.arrowContainer} onPress={onClose}>
-            <FontAwesome name="arrow-left" size={24} color="#184EAD" />
+            <FontAwesome name="arrow-left" size={24} color="#F8F8F8" />
           </TouchableOpacity>
           <View style={s.contentContainer}>
             <Text style={[globalStyle.text, s.message]}>
@@ -38,7 +38,7 @@ export default function CameraPermissions({ permission, requestPermission, onClo
       return (
         <View style={s.container}>
           <TouchableOpacity style={s.arrowContainer} onPress={onClose}>
-            <FontAwesome name="arrow-left" size={24} color="#184EAD" />
+            <FontAwesome name="arrow-left" size={24} color="#F8F8F8" />
           </TouchableOpacity>
           <View style={s.contentContainer}>
             <Text style={[globalStyle.text, s.message]}>
@@ -62,6 +62,7 @@ export default function CameraPermissions({ permission, requestPermission, onClo
 const s = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#02080D'
   },
   arrowContainer: {
     padding: 16,
@@ -75,6 +76,7 @@ const s = StyleSheet.create({
   message: {
     textAlign: "center",
     marginBottom: 10,
+    color: '#F8F8F8'
   },
   btn: {
     backgroundColor: "#184EAD",

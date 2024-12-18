@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -30,6 +31,11 @@ export default function Index() {
     closeCamera();
   };
 
+  const getFileName = () => {
+    if (!imageUri) return "No file selected";
+    return imageUri.split("/").pop(); // Extract file name from URI
+  };
+
   const handleGenerate = () => {
     if (imageUri) {
       handleGenerateCitation(`Image: ${imageUri}`, setResponse);
@@ -39,7 +45,7 @@ export default function Index() {
   };
 
   if (isCameraOpen) {
-    return <CameraScreen onCapture={handleCapture} onClose={closeCamera} />;
+    return <CameraScreen onPictureTaken={handleCapture} onClose={closeCamera} />;
   }
 
   return (
@@ -69,6 +75,10 @@ export default function Index() {
             <UploadButton option={"photo"} isEnabled={true} />
             <UploadButton option={"file"} isEnabled={true} />
           </View>
+          <View style={s.fileNameContainer}>
+            <Text>{getFileName()}</Text>
+          </View>
+          <Text style={globalStyle.text}>File name placeholder</Text>
           <GenerateButton
             btnText={"Generate Citation"}
             isEnabled={true}
@@ -115,5 +125,10 @@ const s = StyleSheet.create({
   generateButtonContainer: {
     paddingVertical: 16,
     backgroundColor: "red",
+  },
+  fileNameContainer: {
+    // flex: 1,
+    padding: 8,
+    // backgroundColor: "#f0f0f0",
   },
 });
