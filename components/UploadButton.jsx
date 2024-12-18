@@ -1,33 +1,74 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import globalStyle from "../utils/styles";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export default function UploadButton({icon}) {
-	
+export default function UploadButton({
+  icon,
+  isEnabled,
+  style,
+  onPress,
+}) {
   const icons = {
-    photo: <FontAwesome name="photo" size={24} color="black" />,
-    camera: <FontAwesome name="camera" size={24} color="black" />,
-    file: <FontAwesome name="file-o" size={24} color="black" />,
+    photo: <FontAwesome name="photo" size={24} color="#5996FF" />,
+    camera: <FontAwesome name="camera" size={24} color="#5996FF" />,
+    file: <FontAwesome name="file-o" size={24} color="#5996FF" />,
   };
 
   const displayedIcon = icons[icon] || <Text>?</Text>;
 
+  function checkIfEnabled() {
+    return isEnabled ? s.enabled : s.disabled;
+  }
 
   return (
-    <View style={s.container}>
+    <Pressable
+      style={({ pressed }) => [
+        s.btn,
+        checkIfEnabled(),
+        isEnabled && pressed && { opacity: 0.5 },
+        style,
+      ]}
+      onPress={isEnabled ? onPress : null}
+    >
       <View>{displayedIcon}</View>
-    </View>
+    </Pressable>
   );
 }
 
 const s = StyleSheet.create({
-  container: {
-		flex: 1,
-    backgroundColor: "pink",
+  btn: {
+    flex: 1,
     paddingHorizontal: 8,
     alignItems: "center",
-		justifyContent: 'center',
-		borderWidth: 1,
-		marginHorizontal: 4,
-	},
+    justifyContent: "center",
+    borderWidth: 1,
+    marginHorizontal: 4,
+    height: 80,
+    borderRadius: 8,
+  },
+  disabled: {
+    backgroundColor: "#DAE1E5",
+  },
+  enabled: {
+    backgroundColor: "#F8F8F8",
+    borderColor: "#B8C3CC",
+    //shadow
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.22,
+    // shadowRadius: 2.22,
+
+    // elevation: 3,
+  },
+  btnText: {
+    fontFamily: "Saira_600SemiBold",
+    fontSize: 16,
+  },
+  btnSecondaryText: {
+    fontSize: 14,
+    marginTop: -8,
+  },
 });

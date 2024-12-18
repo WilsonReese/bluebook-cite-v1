@@ -20,11 +20,14 @@ export default function Index() {
               response you'll get back.{" "}
             </Text>
           </View>
+          <View style={s.responseContainer}>
+            <Text>Response Placeholder</Text>
+          </View>
           <TextInputField/>
           <View style={s.uploadContainer}>
-            <UploadButton icon={'camera'}/>
-            <UploadButton icon={'photo'}/>
-            <UploadButton icon={'file'}/>
+            <UploadButton icon={'camera'} isEnabled={true}/>
+            <UploadButton icon={'photo'} isEnabled={true}/>
+            <UploadButton icon={'file'} isEnabled={true}/>
           </View>
           <View style={s.generateButtonContainer}>
             <Text>Generate citation</Text>
@@ -48,11 +51,22 @@ const s = StyleSheet.create({
   instructionsContainer: {
     paddingVertical: 16,
   },
+  responseContainer: {
+    height: 80,
+    justifyContent: 'center',
+    borderWidth: 1,
+    alignSelf: 'stretch', 
+    alignItems: 'center',
+    marginVertical: 16, 
+    // flexDirection: 'row',
+    // flex: 1,
+    // backgroundColor: 'blue'
+  },
   uploadContainer: {
     flexDirection: "row",
-    backgroundColor: "yellow",
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginHorizontal: -4,
     paddingVertical: 16,
     // width: '100%',
   },
