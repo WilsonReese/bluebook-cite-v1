@@ -41,7 +41,7 @@ export default function Index() {
     console.log("Input Text:", inputText);
     console.log("Image URI:", imageUri);
     if (imageUri) {
-      handleGenerateCitation(`Image: ${imageUri}`, setResponse, true);
+      handleGenerateCitation(`${imageUri}`, setResponse, true);
     } else {
       handleGenerateCitation(inputText, setResponse, false);
     }
