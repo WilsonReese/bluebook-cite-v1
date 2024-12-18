@@ -1,12 +1,21 @@
 import axios from "axios";
+import * as FileSystem from "expo-file-system";
 
-export async function handleGenerateCitation(inputText, setResponse) {
-  if (!inputText.trim()) {
-    setResponse("Please enter text to generate a citation.");
+export async function handleGenerateCitation(input, setResponse, isImage = false) {
+  if (!input.trim() && !isImage) {
+    setResponse("Please enter text or upload an image to generate a citation.");
     return;
   }
 
   try {
+    const content = isImage
+      ? `data:image/jpeg;base64,${await FileSystem.readAsStringAsync(input, {
+          encoding: FileSystem.EncodingType.Base64,
+        })}`
+      : input;
+
+    console.log("Prepared Content:", content);
+
     // Step 1: Create the thread and send user message in a single call
     const threadRes = await axios.post(
       "https://api.openai.com/v1/threads",
@@ -14,7 +23,7 @@ export async function handleGenerateCitation(inputText, setResponse) {
         messages: [
           {
             role: "user",
-            content: inputText,
+            content: isImage ? { type: "file", file: content } : content,
           },
         ],
       },

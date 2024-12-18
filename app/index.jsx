@@ -37,10 +37,13 @@ export default function Index() {
   };
 
   const handleGenerate = () => {
+    console.log("handleGenerate invoked");
+    console.log("Input Text:", inputText);
+    console.log("Image URI:", imageUri);
     if (imageUri) {
-      handleGenerateCitation(`Image: ${imageUri}`, setResponse);
+      handleGenerateCitation(`Image: ${imageUri}`, setResponse, true);
     } else {
-      handleGenerateCitation(inputText, setResponse);
+      handleGenerateCitation(inputText, setResponse, false);
     }
   };
 
@@ -82,7 +85,7 @@ export default function Index() {
           <GenerateButton
             btnText={"Generate Citation"}
             isEnabled={true}
-            onPress={() => handleGenerateCitation(inputText, setResponse)}
+            onPress={handleGenerate}
           />
         </SafeAreaView>
       </TouchableWithoutFeedback>
