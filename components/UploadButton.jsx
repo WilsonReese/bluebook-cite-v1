@@ -1,10 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
 import globalStyle from "../utils/styles";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-export default function UploadButton() {
+export default function UploadButton({icon}) {
+	
+  const icons = {
+    photo: <FontAwesome name="photo" size={24} color="black" />,
+    camera: <FontAwesome name="camera" size={24} color="black" />,
+    file: <FontAwesome name="file-o" size={24} color="black" />,
+  };
+
+  const displayedIcon = icons[icon] || <Text>?</Text>;
+
+
   return (
     <View style={s.container}>
-      <Text style={globalStyle.text}>Test let's see what happens when I add text</Text>
+      <View>{displayedIcon}</View>
     </View>
   );
 }

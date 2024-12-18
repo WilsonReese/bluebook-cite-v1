@@ -4,6 +4,7 @@ import TextInputField from "../components/TextInputField";
 import globalStyle from "../utils/styles";
 import UploadButton from "../components/UploadButton";
 
+
 export default function Index() {
   return (
     <SafeAreaProvider>
@@ -21,9 +22,9 @@ export default function Index() {
           </View>
           <TextInputField/>
           <View style={s.uploadContainer}>
-            <UploadButton/>
-            <UploadButton/>
-            <UploadButton/>
+            <UploadButton icon={'camera'}/>
+            <UploadButton icon={'photo'}/>
+            <UploadButton icon={'file'}/>
           </View>
           <View style={s.generateButtonContainer}>
             <Text>Generate citation</Text>
