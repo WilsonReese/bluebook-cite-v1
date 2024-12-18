@@ -14,10 +14,33 @@ import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
 import { useState } from "react";
 import { handleGenerateCitation } from "../utils/api";
+import CameraScreen from "../components/CameraScreen";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
   const [response, setResponse] = useState("Response Placeholder"); // State to store API response
+  const [imageUri, setImageUri] = useState(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const openCamera = () => setIsCameraOpen(true);
+  const closeCamera = () => setIsCameraOpen(false);
+
+  const handleCapture = (uri) => {
+    setImageUri(uri);
+    closeCamera();
+  };
+
+  const handleGenerate = () => {
+    if (imageUri) {
+      handleGenerateCitation(`Image: ${imageUri}`, setResponse);
+    } else {
+      handleGenerateCitation(inputText, setResponse);
+    }
+  };
+
+  if (isCameraOpen) {
+    return <CameraScreen onCapture={handleCapture} />;
+  }
 
   return (
     <SafeAreaProvider>
@@ -42,7 +65,7 @@ export default function Index() {
           <TextInputField onTextChange={setInputText} />
           <Text style={globalStyle.text}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
-            <UploadButton option={"camera"} isEnabled={true} />
+            <UploadButton option={"camera"} isEnabled={true} onPress={openCamera} />
             <UploadButton option={"photo"} isEnabled={true} />
             <UploadButton option={"file"} isEnabled={true} />
           </View>

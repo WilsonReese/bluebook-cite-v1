@@ -7,10 +7,17 @@ export async function handleGenerateCitation(inputText, setResponse) {
   }
 
   try {
-    // Step 1: Create the thread
+    // Step 1: Create the thread and send user message in a single call
     const threadRes = await axios.post(
       "https://api.openai.com/v1/threads",
-      {},
+      {
+        messages: [
+          {
+            role: "user",
+            content: inputText,
+          },
+        ],
+      },
       {
         headers: {
           Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
@@ -23,22 +30,7 @@ export async function handleGenerateCitation(inputText, setResponse) {
     const threadId = threadRes.data.id;
     console.log("ThreadID", threadId);
 
-    // Step 2: Send content
-    await axios.post(
-      `https://api.openai.com/v1/threads/${threadId}/messages`,
-      { role: "user", content: inputText },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-          "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2",
-        },
-      }
-    );
-
-    console.log("Step 2 complete");
-
-    // Step 3: Engage Assistant API
+    // Step 2: Engage Assistant API (start the run)
     const runRes = await axios.post(
       `https://api.openai.com/v1/threads/${threadId}/runs`,
       { assistant_id: `${process.env.EXPO_PUBLIC_ASSISTANT_ID}` },
@@ -51,9 +43,9 @@ export async function handleGenerateCitation(inputText, setResponse) {
       }
     );
 
-    console.log("Step 3 complete");
+    console.log("Step 2 complete");
 
-    // Step 4: Poll for the response
+    // Step 3: Poll for the response
     let assistantMessage;
     while (true) {
       const messagesRes = await axios.get(
@@ -75,12 +67,12 @@ export async function handleGenerateCitation(inputText, setResponse) {
 
       if (assistantMessage) break;
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Poll every second
     }
 
-    console.log("Step 4 complete");
+    console.log("Step 3 complete");
 
-    // Step 5: Extract the assistant's response
+    // Step 4: Extract the assistant's response
     const contentText = assistantMessage.content.find(
       (item) => item.type === "text"
     );
