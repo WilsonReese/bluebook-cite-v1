@@ -1,14 +1,24 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import globalStyle from "../utils/styles";
+import { useState } from "react";
 
 
-export default function TextInputField() {
+export default function TextInputField({onTextChange}) {
+  const [text, setText] = useState("");
+
+  function handleTextChange(value) {
+    setText(value);
+    onTextChange(value); // Notify parent component
+  }
+
   return (
     <View style={s.inputContainer}>
       <TextInput
         style={[s.textInput, globalStyle.text]}
         placeholder="To Kill a Mockingbird by Harper Lee"
         placeholderTextColor="#B8C3CC"
+        value={text}
+        onChangeText={handleTextChange}
       />
     </View>
   );
