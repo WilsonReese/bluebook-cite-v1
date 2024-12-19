@@ -9,12 +9,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import TextInputField from "../components/TextInputField";
+import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
+import { useState } from "react";
 import globalStyle from "../utils/styles";
+import { handleGenerateCitation } from "../utils/api";
+import TextInputField from "../components/TextInputField";
 import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
-import { useState } from "react";
-import { handleGenerateCitation } from "../utils/api";
 import CameraScreen from "../components/CameraScreen";
 
 export default function Index() {
@@ -29,6 +30,22 @@ export default function Index() {
   const handleCapture = (uri) => {
     setImageUri(uri);
     closeCamera();
+  };
+
+  const handleSelectPhoto = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Only allow images
+        allowsEditing: false, // Allow basic editing
+        quality: 1, // Set image quality
+      });
+
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri); // Set the selected image URI
+      }
+    } catch (error) {
+      console.error("Error selecting photo:", error);
+    }
   };
 
   const getFileName = () => {
@@ -75,7 +92,7 @@ export default function Index() {
           <Text style={globalStyle.text}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
             <UploadButton option={"camera"} isEnabled={true} onPress={openCamera} />
-            <UploadButton option={"photo"} isEnabled={true} />
+            <UploadButton option={"photo"} isEnabled={true} onPress={handleSelectPhoto} />
             <UploadButton option={"file"} isEnabled={true} />
           </View>
           <View style={s.fileNameContainer}>
