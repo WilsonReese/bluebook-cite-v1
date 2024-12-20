@@ -16,7 +16,11 @@ import TextInputField from "../components/TextInputField";
 import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
 import CameraScreen from "../components/CameraScreen";
-import { getFileName, handleSelectFile, handleSelectPhoto } from "../utils/fileHandlers";
+import {
+  getFileName,
+  handleSelectFile,
+  handleSelectPhoto,
+} from "../utils/fileHandlers";
 import Markdown from "react-native-markdown-display";
 import globalStyle from "../utils/styles";
 
@@ -38,11 +42,11 @@ export default function Index() {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
     console.log("File URI:", fileUri);
-  
+
     if (fileUri) {
       const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
       console.log("Is PDF:", isPDF);
-  
+
       handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
     } else {
       handleGenerateCitation(inputText, setResponse, false); // Text input
@@ -50,7 +54,7 @@ export default function Index() {
   };
 
   if (isCameraOpen) {
-    return <CameraScreen onPictureTaken={handleCapture} onClose={closeCamera} />;
+    return  <CameraScreen onPictureTaken={handleCapture} onClose={closeCamera} />;
   }
 
   return (
@@ -58,12 +62,16 @@ export default function Index() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.titleContainer}>
-            <Text style={globalStyle.titleText}>
-              Bluebook Citations.
-            </Text>
-            <View style={{height: 3, width: 160, backgroundColor: '#184EAD', marginTop: 16, alignSelf: 'center'}}>
-
-            </View>
+            <Text style={globalStyle.titleText}>Bluebook Citations.</Text>
+            <View
+              style={{
+                height: 3,
+                width: 160,
+                backgroundColor: "#184EAD",
+                marginTop: 16,
+                alignSelf: "center",
+              }}
+            ></View>
           </View>
           <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
@@ -79,9 +87,21 @@ export default function Index() {
           <TextInputField onTextChange={setInputText} />
           <Text style={globalStyle.text}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
-            <UploadButton option={"camera"} isEnabled={true} onPress={openCamera} />
-            <UploadButton option={"photo"} isEnabled={true} onPress={() => handleSelectPhoto(setFileUri)} />
-            <UploadButton option={"file"} isEnabled={true} onPress={() => handleSelectFile(setFileUri)} />
+            <UploadButton
+              option={"camera"}
+              isEnabled={true}
+              onPress={openCamera}
+            />
+            <UploadButton
+              option={"photo"}
+              isEnabled={true}
+              onPress={() => handleSelectPhoto(setFileUri)}
+            />
+            <UploadButton
+              option={"file"}
+              isEnabled={true}
+              onPress={() => handleSelectFile(setFileUri)}
+            />
           </View>
           <View style={s.fileNameContainer}>
             <Text>{getFileName(fileUri)}</Text>

@@ -73,7 +73,13 @@ export default function RootLayout() {
     );
   }
 
-  return <Stack />;
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false, // This hides the header globally for all screens
+      }}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

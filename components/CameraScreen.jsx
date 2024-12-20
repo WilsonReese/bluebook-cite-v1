@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Button, Linking } from "react
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import globalStyle from "../utils/styles";
 import CameraPermissions from "./CameraPermissions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CameraScreen({ onClose, onPictureTaken }) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -26,7 +27,7 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
   return (
     <View style={s.container}>
       <CameraView ref={cameraRef} style={s.camera} facing={"back"}>
-        <View style={s.overlayContainer}>
+        <SafeAreaView style={s.overlayContainer}>
           <View style={s.closeButtonContainer}>
             <TouchableOpacity onPress={onClose} style={s.closeButton}>
               <FontAwesome name="close" size={24} color="#F8F8F8" />
@@ -38,7 +39,7 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
               <View style={s.captureButtonInner}/>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </CameraView>
     </View>
   );
@@ -59,13 +60,14 @@ const s = StyleSheet.create({
   overlayContainer: {
     flex: 1,
     justifyContent: "space-between",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   closeButtonContainer: {
     alignItems: "flex-end",
   },
   closeButton: {
-		padding: 24,
+		paddingHorizontal: 24,
+    paddingVertical: 16,
   },
   captureContainer: {
     alignItems: "center",
