@@ -59,8 +59,11 @@ export default function Index() {
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.titleContainer}>
             <Text style={globalStyle.titleText}>
-              Bluebook Citation Generator
+              Bluebook Citations.
             </Text>
+            <View style={{height: 3, width: 160, backgroundColor: '#184EAD', marginTop: 16, alignSelf: 'center'}}>
+
+            </View>
           </View>
           <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
