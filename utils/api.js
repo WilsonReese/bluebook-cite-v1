@@ -1,3 +1,160 @@
+// TRY 2 -- works for sending PDFs correctly.
+
+import axios from "axios";
+import * as FileSystem from "expo-file-system";
+import FormData from "form-data";
+
+async function uploadFile(uri, fileType) {
+  try {
+    const formData = new FormData();
+    formData.append("file", {
+      uri,
+      name: fileType === "pdf" ? "document.pdf" : "image.jpg",
+      type: fileType === "pdf" ? "application/pdf" : "image/jpeg",
+    });
+    formData.append("purpose", "assistants"); // Purpose specific to Assistant API
+
+    const uploadRes = await axios.post(
+      "https://api.openai.com/v1/files",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("Uploaded File Response:", uploadRes.data);
+    return uploadRes.data.id; // Return the file_id
+  } catch (error) {
+    console.error("Error uploading file:", error.response?.data || error.message);
+    throw new Error("Failed to upload file.");
+  }
+}
+
+export async function handleGenerateCitation(input, setResponse, isFile = false, isPDF = false) {
+  if (!input.trim() && !isFile) {
+    setResponse("Please enter text or upload a file to generate a citation.");
+    return;
+  }
+
+  try {
+    let file_id;
+
+    if (isFile) {
+      const fileType = isPDF ? "pdf" : "image";
+      console.log(fileType === "pdf" ? "PDF File URI:" : "Image URI:", input);
+
+      // Upload the file and get the file_id
+      file_id = await uploadFile(input, fileType);
+      console.log("Uploaded File ID:", file_id);
+    }
+
+    const threadPayload = {
+      messages: [
+        isFile
+          ? isPDF
+            ? {
+                role: "user",
+                content: [
+                  {
+                    type: "text", // Use 'text' type for PDFs
+                    text: file_id, // Directly use the uploaded file_id as the text
+                  },
+                ],
+              }
+            : {
+                role: "user",
+                content: [
+                  {
+                    type: "image_file",
+                    image_file: {
+                      file_id, // Use the uploaded file ID
+                    },
+                  },
+                ],
+              }
+          : { role: "user", content: input }, // Text input remains a string
+      ],
+    };
+
+    console.log("Thread Payload:", JSON.stringify(threadPayload, null, 2));
+
+    // Step 1: Create the thread
+    const threadRes = await axios.post(
+      "https://api.openai.com/v1/threads",
+      threadPayload,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2",
+        },
+      }
+    );
+
+    const threadId = threadRes.data.id;
+    console.log("Thread ID:", threadId);
+
+    // Step 2: Engage Assistant API (start the run)
+    const runRes = await axios.post(
+      `https://api.openai.com/v1/threads/${threadId}/runs`,
+      { assistant_id: `${process.env.EXPO_PUBLIC_ASSISTANT_ID}` },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2",
+        },
+      }
+    );
+
+    console.log("Step 2 complete");
+
+    // Step 3: Poll for the response
+    let assistantMessage;
+    while (true) {
+      const messagesRes = await axios.get(
+        `https://api.openai.com/v1/threads/${threadId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
+            "OpenAI-Beta": "assistants=v2",
+          },
+        }
+      );
+
+      const messages = messagesRes.data.data;
+      console.log("Messages", messages);
+
+      assistantMessage = messages.find(
+        (msg) => msg.role === "assistant" && msg.content?.length > 0
+      );
+
+      if (assistantMessage) break;
+
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Poll every second
+    }
+
+    console.log("Step 3 complete");
+
+    // Step 4: Extract the assistant's response
+    const contentText = assistantMessage.content.find(
+      (item) => item.type === "text"
+    );
+
+    const citation = contentText?.text?.value || "No citation found.";
+    console.log("Citation:", citation);
+    setResponse(citation);
+  } catch (error) {
+    console.error("Error generating citation:", error.response?.data || error.message);
+    setResponse("Failed to generate citation. Please try again.");
+  }
+}
+
+// // Try 1 - Only works or images - no PDF support
+
 // import axios from "axios";
 // import * as FileSystem from "expo-file-system";
 // import FormData from "form-data";
@@ -143,148 +300,3 @@
 //     setResponse("Failed to generate citation. Please try again.");
 //   }
 // }
-
-import axios from "axios";
-import * as FileSystem from "expo-file-system";
-import FormData from "form-data";
-
-async function uploadFile(filePath, fileType) {
-  try {
-    const formData = new FormData();
-    formData.append("file", {
-      uri: filePath,
-      name: fileType === "image" ? "image.jpg" : "file.pdf",
-      type: fileType === "image" ? "image/jpeg" : "application/pdf",
-    });
-    formData.append("purpose", "assistants");
-
-    const uploadRes = await axios.post(
-      "https://api.openai.com/v1/files",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    console.log("Uploaded File Response:", uploadRes.data);
-    return uploadRes.data.id;
-  } catch (error) {
-    console.error("Error uploading file:", error.response?.data || error.message);
-    throw new Error("Failed to upload file.");
-  }
-}
-
-export async function handleGenerateCitation(input, setResponse, isFile = false, isPDF = false) {
-  console.log('isFile?', isFile)
-  console.log('isPDF?', isPDF)
-  if (!input.trim() && !isFile) {
-    setResponse("Please enter text or upload a file to generate a citation.");
-    return;
-  }
-
-  try {
-    let file_id;
-
-    if (isFile) {
-      const fileType = isPDF ? "pdf" : "image";
-      console.log(isPDF ? "PDF File URI:" : "Image URI:", input);
-
-      // Upload the file and get the file_id
-      file_id = await uploadFile(input, fileType);
-      console.log("Uploaded File ID:", file_id);
-    }
-
-    const threadPayload = {
-      messages: [
-        isFile
-          ? {
-              role: "user",
-              content: [
-                {
-                  type: isPDF ? "document" : "image_file",
-                  [isPDF ? "document" : "image_file"]: {
-                    file_id,
-                  },
-                },
-              ],
-            }
-          : { role: "user", content: input },
-      ],
-    };
-
-    console.log("Thread Payload:", JSON.stringify(threadPayload, null, 2));
-
-    // Step 1: Create the thread
-    const threadRes = await axios.post(
-      "https://api.openai.com/v1/threads",
-      threadPayload,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-          "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2",
-        },
-      }
-    );
-
-    const threadId = threadRes.data.id;
-    console.log("Thread ID:", threadId);
-
-    // Step 2: Engage Assistant API (start the run)
-    const runRes = await axios.post(
-      `https://api.openai.com/v1/threads/${threadId}/runs`,
-      { assistant_id: `${process.env.EXPO_PUBLIC_ASSISTANT_ID}` },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-          "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2",
-        },
-      }
-    );
-
-    console.log("Step 2 complete");
-
-    // Step 3: Poll for the response
-    let assistantMessage;
-    while (true) {
-      const messagesRes = await axios.get(
-        `https://api.openai.com/v1/threads/${threadId}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
-            "OpenAI-Beta": "assistants=v2",
-          },
-        }
-      );
-
-      const messages = messagesRes.data.data;
-      console.log("Messages", messages);
-
-      assistantMessage = messages.find(
-        (msg) => msg.role === "assistant" && msg.content?.length > 0
-      );
-
-      if (assistantMessage) break;
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-
-    console.log("Step 3 complete");
-
-    // Step 4: Extract the assistant's response
-    const contentText = assistantMessage.content.find(
-      (item) => item.type === "text"
-    );
-
-    const citation = contentText?.text?.value || "No citation found.";
-    console.log("Citation:", citation);
-    setResponse(citation);
-  } catch (error) {
-    console.error("Error generating citation:", error.response?.data || error.message);
-    setResponse("Failed to generate citation. Please try again.");
-  }
-}
