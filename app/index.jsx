@@ -9,16 +9,16 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
-import * as DocumentPicker from "expo-document-picker"; // Import DocumentPicker
 import { useState } from "react";
-import globalStyle from "../utils/styles";
+
 import { handleGenerateCitation } from "../utils/api";
 import TextInputField from "../components/TextInputField";
 import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
 import CameraScreen from "../components/CameraScreen";
 import { getFileName, handleSelectFile, handleSelectPhoto } from "../utils/fileHandlers";
+import Markdown from "react-native-markdown-display";
+import globalStyle from "../utils/styles";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
@@ -70,7 +70,7 @@ export default function Index() {
             </Text>
           </View>
           <View style={s.responseContainer}>
-            <Text>{response}</Text>
+            <Markdown>{response}</Markdown>
           </View>
           <Text style={globalStyle.text}>Enter book details</Text>
           <TextInputField onTextChange={setInputText} />
@@ -109,7 +109,7 @@ const s = StyleSheet.create({
     paddingVertical: 16,
   },
   responseContainer: {
-    height: 60,
+    height: 100,
     justifyContent: "center",
     borderWidth: 1,
     alignSelf: "stretch",
