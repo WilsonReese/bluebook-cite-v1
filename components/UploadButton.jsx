@@ -53,7 +53,7 @@ const s = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     marginHorizontal: 4,
-    height: 80,
+    height: 60,
     borderRadius: 8,
   },
   disabled: {

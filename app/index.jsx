@@ -75,13 +75,13 @@ export default function Index() {
               }}
             ></View>
           </View>
-          <View style={s.instructionsContainer}>
+          {/* <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
               Instructions: These are the instructions for using the app. And
               this is an example of what to put in. This is an example of the
               response you'll get back.{" "}
             </Text>
-          </View>
+          </View> */}
           <View style={s.responseContainer}>
             <Markdown>{response}</Markdown>
           </View>
@@ -99,16 +99,15 @@ export default function Index() {
               isEnabled={true}
               onPress={() => handleSelectPhoto(setFileUri)}
             />
-            <UploadButton
+            {/* <UploadButton
               option={"file"}
               isEnabled={true}
               onPress={() => handleSelectFile(setFileUri)}
-            />
+            /> */}
           </View>
           <View style={s.fileNameContainer}>
-            <Text>{getFileName(fileUri)}</Text>
+            <Text style={globalStyle.text}>{getFileName(fileUri)}</Text>
           </View>
-          <Text style={globalStyle.text}>File name placeholder</Text>
           <GenerateButton
             btnText={"Generate Citation"}
             isEnabled={true}
