@@ -78,9 +78,9 @@ export default function Index() {
           <ResponseSection response={response} setResponse={setResponse}/>
           <View style={s.divider}/>
           
-          <Text style={globalStyle.text}>Enter book details</Text>
+          <Text style={[globalStyle.text, {paddingVertical: 8}]}>Enter book details</Text>
           <TextInputField onTextChange={setInputText} />
-          <Text style={globalStyle.text}>Or upload an image of the cover</Text>
+          <Text style={[globalStyle.text, {paddingVertical: 8}]}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
             <UploadButton
               option={"camera"}
@@ -138,7 +138,7 @@ const s = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     marginHorizontal: -4,
-    paddingVertical: 16,
+    // paddingVertical: 16,
     // width: '100%',
   },
   generateButtonContainer: {
