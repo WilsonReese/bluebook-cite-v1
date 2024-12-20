@@ -9,9 +9,9 @@ export default function UploadButton({
   onPress,
 }) {
   const icons = {
-    photo: <FontAwesome name="photo" size={24} color="#5996FF" />,
-    camera: <FontAwesome name="camera" size={24} color="#5996FF" />,
-    file: <FontAwesome name="file-pdf-o" size={24} color="#5996FF" />,
+    photo: <FontAwesome name="photo" size={24} color="#184EAD" />,
+    camera: <FontAwesome name="camera" size={24} color="#184EAD" />,
+    file: <FontAwesome name="file-pdf-o" size={24} color="#184EAD" />,
   };
 	const displayedIcon = icons[option] || <Text>?</Text>;
 	

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Clipboard from "expo-clipboard"; // Import from expo-clipboard
 import globalStyle from "../utils/styles";
 import { useState } from "react";
 import Markdown from "react-native-markdown-display";
