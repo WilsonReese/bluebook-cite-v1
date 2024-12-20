@@ -18,6 +18,7 @@ import TextInputField from "../components/TextInputField";
 import UploadButton from "../components/UploadButton";
 import GenerateButton from "../components/GenerateButton";
 import CameraScreen from "../components/CameraScreen";
+import { getFileName, handleSelectFile, handleSelectPhoto } from "../utils/fileHandlers";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
@@ -31,64 +32,6 @@ export default function Index() {
   const handleCapture = (uri) => {
     setFileUri(uri);
     closeCamera();
-  };
-
-  const handleSelectPhoto = async () => {
-    try {
-      // Check if permissions are granted
-      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-  
-      if (status !== "granted") {
-        // Request permissions if not already granted
-        const { status: requestStatus } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
-        if (requestStatus !== "granted") {
-          alert("Permission to access photos is required. You can update this in Settings.");
-          return;
-        }
-      }
-  
-      // Open the photo library
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'], // Only allow images
-        allowsEditing: false, // Disable cropping
-        quality: 1, // Set image quality
-      });
-  
-      if (!result.canceled) {
-        setFileUri(result.assets[0].uri); // Set the selected image URI
-      }
-    } catch (error) {
-      console.error("Error selecting photo:", error);
-    }
-  };
-
-  const handleSelectFile = async () => {
-    try {
-      console.log("Opening file picker...");
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ["image/*", "application/pdf"], // Allow images and PDFs
-        copyToCacheDirectory: true,
-      });
-  
-      console.log("File picker result:", result);
-  
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const file = result.assets[0]; // Access the first selected file
-        console.log("Selected file URI:", file.uri);
-        setFileUri(file.uri); // Set the file URI to state
-      } else {
-        console.log("File selection was canceled or invalid.");
-      }
-    } catch (error) {
-      console.error("Error selecting file:", error);
-    }
-  };
-
-  const getFileName = () => {
-    if (!fileUri) return "No file selected";
-    return fileUri.split("/").pop(); // Extract file name from URI
   };
 
   const handleGenerate = () => {
@@ -134,11 +77,11 @@ export default function Index() {
           <Text style={globalStyle.text}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
             <UploadButton option={"camera"} isEnabled={true} onPress={openCamera} />
-            <UploadButton option={"photo"} isEnabled={true} onPress={handleSelectPhoto} />
-            <UploadButton option={"file"} isEnabled={true} onPress={handleSelectFile} />
+            <UploadButton option={"photo"} isEnabled={true} onPress={() => handleSelectPhoto(setFileUri)} />
+            <UploadButton option={"file"} isEnabled={true} onPress={() => handleSelectFile(setFileUri)} />
           </View>
           <View style={s.fileNameContainer}>
-            <Text>{getFileName()}</Text>
+            <Text>{getFileName(fileUri)}</Text>
           </View>
           <Text style={globalStyle.text}>File name placeholder</Text>
           <GenerateButton
