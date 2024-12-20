@@ -11,6 +11,9 @@ import globalStyle from "../utils/styles";
 import { useState } from "react";
 import Markdown from "react-native-markdown-display";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MarkdownIt from "markdown-it";
+import RemoveMarkdown from "remove-markdown";
+// import { htmlToRtf } from "html-to-rtf"; // HTML to RTF conversion
 
 export default function ResponseSection({ response, setResponse }) {
   const handleClearResponse = () => {
@@ -18,14 +21,74 @@ export default function ResponseSection({ response, setResponse }) {
     Alert.alert("Cleared", "The response has been cleared.");
   };
 
+  // Copies as Markdown text
+  // const handleCopyToClipboard = async () => {
+  //   try {
+  //     await Clipboard.setStringAsync(response); // Copy the response text
+  //     Alert.alert("Copied", "The response has been copied to the clipboard.");
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to copy to clipboard.");
+  //   }
+  // };
+
   const handleCopyToClipboard = async () => {
     try {
-      await Clipboard.setStringAsync(response); // Copy the response text
-      Alert.alert("Copied", "The response has been copied to the clipboard.");
+      const plainText = RemoveMarkdown(response); // Strip Markdown formatting
+      await Clipboard.setStringAsync(plainText); // Copy plain text to clipboard
+      Alert.alert("Copied without Formatting", "Add formatting to the text after pasting it into your text editor.");
     } catch (error) {
+      console.error("Error copying to clipboard:", error);
       Alert.alert("Error", "Failed to copy to clipboard.");
     }
   };
+
+  
+
+  // // Convert to HTML and copy
+  // const handleCopyToClipboard = async () => {
+  //   try {
+  //     const md = new MarkdownIt(); // Initialize Markdown-It
+  //     const htmlContent = md.render(response); // Convert Markdown to HTML
+  
+  //     // Copy HTML content to the clipboard
+  //     Clipboard.setStringAsync(htmlContent);
+  
+  //     Alert.alert("Copied", "The formatted response has been copied to the clipboard.");
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to copy to clipboard.");
+  //   }
+  // };
+
+  // Convert to RTF and copy
+
+  // const markdownToRtf = (markdownContent) => {
+  //   // Example implementation for basic Markdown to RTF
+  //   let rtf = "{\\rtf1\\ansi ";
+  //   const italicRegex = /\*(.*?)\*/g; // Match *text*
+  //   const boldRegex = /\*\*(.*?)\*\*/g; // Match **text**
+  
+  //   rtf += markdownContent
+  //     .replace(italicRegex, "{\\i $1}") // Convert *text* to {\i text}
+  //     .replace(boldRegex, "{\\b $1}"); // Convert **text** to {\b text}
+  
+  //   rtf += "}";
+  //   return rtf;
+  // };
+  
+  // const handleCopyToClipboard = async (markdownContent) => {
+  //   try {
+  //     const rtfContent = markdownToRtf(markdownContent);
+  
+  //     // Copy RTF content to clipboard
+  //     Clipboard.setStringAsync(rtfContent);
+  
+  //     Alert.alert("Copied", "The formatted content has been copied to the clipboard.");
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to copy content to clipboard.");
+  //     console.error("Error copying RTF content:", error);
+  //   }
+  // };
+  
 
   return (
     <View style={s.container}>

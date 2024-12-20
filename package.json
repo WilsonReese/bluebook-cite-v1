@@ -25,6 +25,7 @@
     "expo-app-loading": "^2.1.1",
     "expo-blur": "~14.0.1",
     "expo-camera": "^16.0.10",
+    "expo-clipboard": "~7.0.0",
     "expo-constants": "~17.0.3",
     "expo-document-picker": "~13.0.1",
     "expo-file-system": "~18.0.6",
@@ -39,6 +40,8 @@
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.6",
     "expo-web-browser": "~14.0.1",
+    "html-to-rtf": "^2.1.0",
+    "markdown-it": "^14.1.0",
     "pdf-lib": "^1.17.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -50,7 +53,7 @@
     "react-native-screens": "~4.1.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "expo-clipboard": "~7.0.0"
+    "remove-markdown": "^0.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
