@@ -24,10 +24,11 @@ import {
 } from "../utils/fileHandlers";
 import Markdown from "react-native-markdown-display";
 import globalStyle from "../utils/styles";
+import ResponseSection from "../components/ResponseSection";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
-  const [response, setResponse] = useState("Response Placeholder"); // State to store API response
+  const [response, setResponse] = useState("The generated citation will appear here."); // State to store API response
   const [fileUri, setFileUri] = useState(null); // Handles both images and files
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
@@ -64,16 +65,8 @@ export default function Index() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.titleContainer}>
-            <Text style={globalStyle.titleText}>Bluebook Citations.</Text>
-            <View
-              style={{
-                height: 3,
-                width: 160,
-                backgroundColor: "#184EAD",
-                marginTop: 16,
-                alignSelf: "center",
-              }}
-            ></View>
+            <Text style={[globalStyle.titleText, {paddingBottom: 16}]}>Bluebook Citations.</Text>
+            <View style={s.divider}/>
           </View>
           {/* <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
@@ -82,9 +75,9 @@ export default function Index() {
               response you'll get back.{" "}
             </Text>
           </View> */}
-          <View style={s.responseContainer}>
-            <Markdown>{response}</Markdown>
-          </View>
+          <ResponseSection response={response} setResponse={setResponse}/>
+          <View style={s.divider}/>
+          
           <Text style={globalStyle.text}>Enter book details</Text>
           <TextInputField onTextChange={setInputText} />
           <Text style={globalStyle.text}>Or upload an image of the cover</Text>
@@ -127,21 +120,18 @@ const s = StyleSheet.create({
     padding: 8,
   },
   titleContainer: {
-    paddingVertical: 16,
+    paddingTop: 16,
+    // paddingBottom: 4,
+  },
+  divider: {
+    height: 3,
+    width: 160,
+    backgroundColor: "#184EAD",
+    // marginTop: 16,
+    alignSelf: "center",
   },
   instructionsContainer: {
     paddingVertical: 16,
-  },
-  responseContainer: {
-    height: 100,
-    justifyContent: "center",
-    borderWidth: 1,
-    alignSelf: "stretch",
-    alignItems: "center",
-    marginVertical: 16,
-    // flexDirection: 'row',
-    // flex: 1,
-    // backgroundColor: 'blue'
   },
   uploadContainer: {
     flexDirection: "row",
