@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { StyleSheet, Text, TouchableOpacity, View, Button, Linking } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Button, Linking, StatusBar } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import globalStyle from "../utils/styles";
 import CameraPermissions from "./CameraPermissions";
@@ -26,6 +26,7 @@ export default function CameraScreen({ onClose, onPictureTaken }) {
 
   return (
     <View style={s.container}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <CameraView ref={cameraRef} style={s.camera} facing={"back"}>
         <SafeAreaView style={s.overlayContainer}>
           <View style={s.closeButtonContainer}>

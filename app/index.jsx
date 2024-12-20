@@ -1,6 +1,7 @@
 import {
   Keyboard,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -59,6 +60,7 @@ export default function Index() {
 
   return (
     <SafeAreaProvider>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.titleContainer}>
