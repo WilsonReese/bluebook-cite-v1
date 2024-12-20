@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
+import * as DocumentPicker from "expo-document-picker"; // Import DocumentPicker
 import { useState } from "react";
 import globalStyle from "../utils/styles";
 import { handleGenerateCitation } from "../utils/api";
@@ -21,46 +22,87 @@ import CameraScreen from "../components/CameraScreen";
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
   const [response, setResponse] = useState("Response Placeholder"); // State to store API response
-  const [imageUri, setImageUri] = useState(null);
+  const [fileUri, setFileUri] = useState(null); // Handles both images and files
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const openCamera = () => setIsCameraOpen(true);
   const closeCamera = () => setIsCameraOpen(false);
 
   const handleCapture = (uri) => {
-    setImageUri(uri);
+    setFileUri(uri);
     closeCamera();
   };
 
   const handleSelectPhoto = async () => {
     try {
+      // Check if permissions are granted
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+  
+      if (status !== "granted") {
+        // Request permissions if not already granted
+        const { status: requestStatus } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+  
+        if (requestStatus !== "granted") {
+          alert("Permission to access photos is required. You can update this in Settings.");
+          return;
+        }
+      }
+  
+      // Open the photo library
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Only allow images
-        allowsEditing: false, // Allow basic editing
+        mediaTypes: ['images'], // Only allow images
+        allowsEditing: false, // Disable cropping
         quality: 1, // Set image quality
       });
-
+  
       if (!result.canceled) {
-        setImageUri(result.assets[0].uri); // Set the selected image URI
+        setFileUri(result.assets[0].uri); // Set the selected image URI
       }
     } catch (error) {
       console.error("Error selecting photo:", error);
     }
   };
 
+  const handleSelectFile = async () => {
+    try {
+      console.log("Opening file picker...");
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ["image/*", "application/pdf"], // Allow images and PDFs
+        copyToCacheDirectory: true,
+      });
+  
+      console.log("File picker result:", result);
+  
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const file = result.assets[0]; // Access the first selected file
+        console.log("Selected file URI:", file.uri);
+        setFileUri(file.uri); // Set the file URI to state
+      } else {
+        console.log("File selection was canceled or invalid.");
+      }
+    } catch (error) {
+      console.error("Error selecting file:", error);
+    }
+  };
+
   const getFileName = () => {
-    if (!imageUri) return "No file selected";
-    return imageUri.split("/").pop(); // Extract file name from URI
+    if (!fileUri) return "No file selected";
+    return fileUri.split("/").pop(); // Extract file name from URI
   };
 
   const handleGenerate = () => {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
-    console.log("Image URI:", imageUri);
-    if (imageUri) {
-      handleGenerateCitation(`${imageUri}`, setResponse, true);
+    console.log("File URI:", fileUri);
+  
+    if (fileUri) {
+      const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
+      console.log("Is PDF:", isPDF);
+  
+      handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
     } else {
-      handleGenerateCitation(inputText, setResponse, false);
+      handleGenerateCitation(inputText, setResponse, false); // Text input
     }
   };
 
@@ -93,7 +135,7 @@ export default function Index() {
           <View style={s.uploadContainer}>
             <UploadButton option={"camera"} isEnabled={true} onPress={openCamera} />
             <UploadButton option={"photo"} isEnabled={true} onPress={handleSelectPhoto} />
-            <UploadButton option={"file"} isEnabled={true} />
+            <UploadButton option={"file"} isEnabled={true} onPress={handleSelectFile} />
           </View>
           <View style={s.fileNameContainer}>
             <Text>{getFileName()}</Text>
