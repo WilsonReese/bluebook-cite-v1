@@ -28,6 +28,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#B8C3CC",
     borderRadius: 8,
+    alignSelf: 'stretch'
   },
   disabledInputContainer: {
     backgroundColor: "#DAE1E5", // Change background color for disabled state

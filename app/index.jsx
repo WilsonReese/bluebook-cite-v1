@@ -161,6 +161,7 @@ const s = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     marginHorizontal: -4,
+    alignSelf: 'stretch'
     // paddingVertical: 16,
     // width: '100%',
   },
