@@ -88,11 +88,11 @@ export default function Index() {
               response you'll get back.{" "}
             </Text>
           </View> */}
-          <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage}/>
+          <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage} setFileUri={setFileUri} setInputText={setInputText}/>
           <View style={s.divider}/>
           
           <Text style={[globalStyle.text, {paddingVertical: 8}]}>Enter book details</Text>
-          <TextInputField onTextChange={setInputText} />
+          <TextInputField onTextChange={setInputText} value={inputText}/>
           <Text style={[globalStyle.text, {paddingVertical: 8}]}>Or upload an image of the cover</Text>
           <View style={s.uploadContainer}>
             <UploadButton
