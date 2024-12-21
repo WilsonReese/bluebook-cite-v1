@@ -78,8 +78,8 @@ export default function Index() {
               />
             )}
           <View style={s.titleContainer}>
-            <Text style={[globalStyle.titleText, {paddingBottom: 16}]}>Bluebook Citations.</Text>
-            <View style={s.divider}/>
+            <Text style={[globalStyle.titleText]}>Bluebook Citations.</Text>
+            {/* <View style={s.divider}/> */}
           </View>
           {/* <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
@@ -89,11 +89,11 @@ export default function Index() {
             </Text>
           </View> */}
           <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage} setFileUri={setFileUri} setInputText={setInputText}/>
-          <View style={s.divider}/>
+          {/* <View style={s.divider}/> */}
           
-          <Text style={[globalStyle.text, {paddingVertical: 8}]}>Enter book details</Text>
+          <Text style={[globalStyle.text, {paddingBottom: 4, alignSelf: 'flex-start'}]}>Enter book details:</Text>
           <TextInputField onTextChange={setInputText} value={inputText}/>
-          <Text style={[globalStyle.text, {paddingVertical: 8}]}>Or upload an image of the cover</Text>
+          <Text style={[globalStyle.text, {paddingTop: 8, paddingBottom: 4, alignSelf: 'flex-start'}]}>Or upload an image of the cover:</Text>
           <View style={s.uploadContainer}>
             <UploadButton
               option={"camera"}
@@ -133,7 +133,7 @@ const s = StyleSheet.create({
     padding: 8,
   },
   titleContainer: {
-    paddingTop: 16,
+    paddingTop: 8,
     // paddingBottom: 4,
   },
   divider: {
@@ -153,10 +153,6 @@ const s = StyleSheet.create({
     marginHorizontal: -4,
     // paddingVertical: 16,
     // width: '100%',
-  },
-  generateButtonContainer: {
-    paddingVertical: 16,
-    backgroundColor: "red",
   },
   fileNameContainer: {
     // flex: 1,

@@ -34,6 +34,7 @@ const s = StyleSheet.create({
   btn: {
     // flex: 1,
     paddingHorizontal: 8,
+    marginTop: 8, 
 		alignSelf: 'stretch',
     alignItems: "center",
     justifyContent: "center",
