@@ -33,6 +33,7 @@ export default function Index() {
   const [fileUri, setFileUri] = useState(null); // Handles both images and files
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
 
   const showMessage = (text, color) => {
     setMessage({ text, color });
@@ -46,18 +47,26 @@ export default function Index() {
     closeCamera();
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
     console.log("File URI:", fileUri);
-
-    if (fileUri) {
-      const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
-      console.log("Is PDF:", isPDF);
-
-      handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
-    } else {
-      handleGenerateCitation(inputText, setResponse, false); // Text input
+  
+    setIsLoading(true); // Set loading to true when the function starts
+  
+    try {
+      if (fileUri) {
+        const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
+        console.log("Is PDF:", isPDF);
+  
+        await handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
+      } else {
+        await handleGenerateCitation(inputText, setResponse, false); // Text input
+      }
+    } catch (error) {
+      console.error("Error generating citation:", error);
+    } finally {
+      setIsLoading(false); // Reset loading to false after the API call completes
     }
   };
 
@@ -116,8 +125,9 @@ export default function Index() {
           </View>
           <GenerateButton
             btnText={"Generate Citation"}
-            isEnabled={true}
+            isEnabled={!isLoading}
             onPress={handleGenerate}
+            isLoading={isLoading} // Pass loading state to show spinner
           />
         </SafeAreaView>
       </TouchableWithoutFeedback>

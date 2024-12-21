@@ -1,14 +1,14 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import globalStyle from "../utils/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function GenerateButton({
   btnText,
   isEnabled,
+  isLoading,
   style,
   onPress,
 }) {
-
   function checkIfEnabled() {
     return isEnabled ? s.enabled : s.disabled;
   }
@@ -21,11 +21,15 @@ export default function GenerateButton({
         isEnabled && pressed && { opacity: 0.5 },
         style,
       ]}
-      onPress={isEnabled ? onPress : null}
+      onPress={isEnabled && !isLoading ? onPress : null}
     >
       <View>
-				<Text style={[globalStyle.text, s.btnText]}>{btnText}</Text>
-			</View>
+        {isLoading ? (
+          <ActivityIndicator size="small" color="#F8F8F8" />
+        ) : (
+          <Text style={[globalStyle.text, s.btnText]}>{btnText}</Text>
+        )}
+      </View>
     </Pressable>
   );
 }
@@ -34,8 +38,8 @@ const s = StyleSheet.create({
   btn: {
     // flex: 1,
     paddingHorizontal: 8,
-    marginTop: 8, 
-		alignSelf: 'stretch',
+    marginTop: 8,
+    alignSelf: "stretch",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -43,7 +47,8 @@ const s = StyleSheet.create({
     borderRadius: 8,
   },
   disabled: {
-    backgroundColor: "#B8C3CC",
+    backgroundColor: "#6E7880",
+    borderColor: "#6E7880",
   },
   enabled: {
     backgroundColor: "#184EAD",
@@ -60,8 +65,8 @@ const s = StyleSheet.create({
     // elevation: 3,
   },
   btnText: {
-    fontFamily: 'Figtree_600SemiBold',
-		fontSize: 16,
-		color: '#F8F8F8'
+    fontFamily: "Figtree_600SemiBold",
+    fontSize: 16,
+    color: "#F8F8F8",
   },
 });
