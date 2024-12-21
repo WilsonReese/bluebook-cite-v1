@@ -56,6 +56,7 @@ export const handleSelectFile = async (setFileUri) => {
 export const getFileName = (fileUri) => {
   if (!fileUri) return "No file selected";
   const fileName = fileUri.split("/").pop();
-  const extension = fileName.split(".").pop().toUpperCase(); // Extract and capitalize the extension
-  return `${extension} uploaded`;
+  // const extension = fileName.split(".").pop().toUpperCase(); // Extract and capitalize the extension
+  // return `${extension} uploaded`;
+  return fileName
 };

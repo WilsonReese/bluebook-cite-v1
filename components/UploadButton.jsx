@@ -58,6 +58,7 @@ const s = StyleSheet.create({
   },
   disabled: {
     backgroundColor: "#DAE1E5",
+    borderColor: '#B8C3CC'
   },
   enabled: {
     backgroundColor: "#F8F8F8",

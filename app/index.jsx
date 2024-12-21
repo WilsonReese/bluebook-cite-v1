@@ -87,7 +87,7 @@ export default function Index() {
               />
             )}
           <View style={s.titleContainer}>
-            <Text style={[globalStyle.titleText]}>Bluebook Citations.</Text>
+            <Text style={[globalStyle.titleText]}>Bluebook Citations</Text>
             {/* <View style={s.divider}/> */}
           </View>
           {/* <View style={s.instructionsContainer}>
@@ -100,23 +100,23 @@ export default function Index() {
           <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage} setFileUri={setFileUri} setInputText={setInputText}/>
           {/* <View style={s.divider}/> */}
           
-          <Text style={[globalStyle.text, {paddingBottom: 4, alignSelf: 'flex-start'}]}>Enter book details:</Text>
+          <Text style={[globalStyle.text, {paddingBottom: 4, alignSelf: 'flex-start'}]}>Enter details:</Text>
           <TextInputField onTextChange={setInputText} value={inputText}/>
           <Text style={[globalStyle.text, {paddingTop: 8, paddingBottom: 4, alignSelf: 'flex-start'}]}>Or upload an image of the cover:</Text>
           <View style={s.uploadContainer}>
             <UploadButton
               option={"camera"}
-              isEnabled={true}
+              isEnabled={!inputText.trim()}
               onPress={openCamera}
             />
             <UploadButton
               option={"photo"}
-              isEnabled={true}
+              isEnabled={!inputText.trim()}
               onPress={() => handleSelectPhoto(setFileUri)}
             />
             {/* <UploadButton
               option={"file"}
-              isEnabled={true}
+              isEnabled={!inputText.trim()}
               onPress={() => handleSelectFile(setFileUri)}
             /> */}
           </View>
@@ -125,7 +125,7 @@ export default function Index() {
           </View>
           <GenerateButton
             btnText={"Generate Citation"}
-            isEnabled={!isLoading}
+            isEnabled={(inputText.trim() !== "" || fileUri) && !isLoading}
             onPress={handleGenerate}
             isLoading={isLoading} // Pass loading state to show spinner
           />
