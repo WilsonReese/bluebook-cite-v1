@@ -101,7 +101,7 @@ export default function Index() {
           {/* <View style={s.divider}/> */}
           
           <Text style={[globalStyle.text, {paddingBottom: 4, alignSelf: 'flex-start'}]}>Enter details:</Text>
-          <TextInputField onTextChange={setInputText} value={inputText}/>
+          <TextInputField onTextChange={setInputText} value={inputText} isEnabled={!fileUri}/>
           <Text style={[globalStyle.text, {paddingTop: 8, paddingBottom: 4, alignSelf: 'flex-start'}]}>Or upload an image of the cover:</Text>
           <View style={s.uploadContainer}>
             <UploadButton

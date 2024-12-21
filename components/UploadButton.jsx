@@ -2,26 +2,22 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import globalStyle from "../utils/styles";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export default function UploadButton({
-  option,
-  isEnabled,
-  style,
-  onPress,
-}) {
+export default function UploadButton({ option, isEnabled, style, onPress }) {
+  const iconColor = isEnabled ? '#184EAD' : '#6E7880'
+  
   const icons = {
-    photo: <FontAwesome name="photo" size={24} color="#184EAD" />,
-    camera: <FontAwesome name="camera" size={24} color="#184EAD" />,
-    file: <FontAwesome name="file-pdf-o" size={24} color="#184EAD" />,
+    photo: <FontAwesome name="photo" size={24} color={iconColor} />,
+    camera: <FontAwesome name="camera" size={24} color={iconColor} />,
+    file: <FontAwesome name="file-pdf-o" size={24} color={iconColor} />,
   };
-	const displayedIcon = icons[option] || <Text>?</Text>;
-	
-	const textOptions = {
-		photo: (<Text>Upload Photo</Text>),
-    camera: (<Text>Take Picture</Text>),
-    file: (<Text>Upload PDF</Text>),
-	}
-	const displayedText = textOptions[option] || <Text>?</Text>;
+  const displayedIcon = icons[option] || <Text>?</Text>;
 
+  const textOptions = {
+    photo: <Text>Upload Photo</Text>,
+    camera: <Text>Take Picture</Text>,
+    file: <Text>Upload PDF</Text>,
+  };
+  const displayedText = textOptions[option] || <Text>?</Text>;
 
   function checkIfEnabled() {
     return isEnabled ? s.enabled : s.disabled;
@@ -38,9 +34,9 @@ export default function UploadButton({
       onPress={isEnabled ? onPress : null}
     >
       <View>
-				{displayedIcon}
-				{/* <Text>{displayedText}</Text> */}
-			</View>
+        {displayedIcon}
+        {/* <Text>{displayedText}</Text> */}
+      </View>
     </Pressable>
   );
 }
@@ -58,7 +54,7 @@ const s = StyleSheet.create({
   },
   disabled: {
     backgroundColor: "#DAE1E5",
-    borderColor: '#B8C3CC'
+    borderColor: "#B8C3CC",
   },
   enabled: {
     backgroundColor: "#F8F8F8",
