@@ -25,12 +25,18 @@ import {
 import Markdown from "react-native-markdown-display";
 import globalStyle from "../utils/styles";
 import ResponseSection from "../components/ResponseSection";
+import { Message } from "../components/Message";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
   const [response, setResponse] = useState("The generated citation will appear here."); // State to store API response
   const [fileUri, setFileUri] = useState(null); // Handles both images and files
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const showMessage = (text, color) => {
+    setMessage({ text, color });
+  };
 
   const openCamera = () => setIsCameraOpen(true);
   const closeCamera = () => setIsCameraOpen(false);
@@ -64,6 +70,13 @@ export default function Index() {
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
+          {message && (
+              <Message
+                message={message.text}
+                color={message.color}
+                onHide={() => setMessage(null)} // Hide message after duration
+              />
+            )}
           <View style={s.titleContainer}>
             <Text style={[globalStyle.titleText, {paddingBottom: 16}]}>Bluebook Citations.</Text>
             <View style={s.divider}/>
@@ -75,7 +88,7 @@ export default function Index() {
               response you'll get back.{" "}
             </Text>
           </View> */}
-          <ResponseSection response={response} setResponse={setResponse}/>
+          <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage}/>
           <View style={s.divider}/>
           
           <Text style={[globalStyle.text, {paddingVertical: 8}]}>Enter book details</Text>

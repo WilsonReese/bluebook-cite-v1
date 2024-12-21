@@ -15,10 +15,11 @@ import MarkdownIt from "markdown-it";
 import RemoveMarkdown from "remove-markdown";
 // import { htmlToRtf } from "html-to-rtf"; // HTML to RTF conversion
 
-export default function ResponseSection({ response, setResponse }) {
+export default function ResponseSection({ response, setResponse, showMessage }) {
   const handleClearResponse = () => {
     setResponse("The generated citation will appear here."); // Clear the response
-    Alert.alert("Cleared", "The response has been cleared.");
+    showMessage("Reset", 'green')
+    // Alert.alert("Cleared", "The response has been cleared.");
   };
 
   // Copies as Markdown text
