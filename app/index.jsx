@@ -87,7 +87,7 @@ export default function Index() {
         backgroundColor="transparent"
         translucent
       />
-      <Pressable style={s.pressable} onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss}> 
+      <Pressable style={[s.pressable, Platform.OS === "web" && { cursor: "default" }]} onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss} pointerEvents="box-none"> 
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.contentWrapper}>
             {message && (

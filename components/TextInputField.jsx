@@ -17,6 +17,7 @@ export default function TextInputField({onTextChange, value, isEnabled}) {
         editable={isEnabled} // Control editability
         keyboardType={isWeb ? "default" : "ascii-capable"} // Ensure keyboard compatibility for web
         accessibilityRole={isWeb ? "textbox" : undefined} // Explicit role for web
+        pointerEvents={isEnabled ? "auto" : "none"} // Disable interaction when not enabled
       />
     </View>
   );

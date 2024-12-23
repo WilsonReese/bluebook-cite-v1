@@ -32,6 +32,7 @@ export default function UploadButton({ option, isEnabled, style, onPress }) {
         style,
       ]}
       onPress={isEnabled ? onPress : null}
+      pointerEvents={isEnabled ? "auto" : "none"} // Disable interaction when not enabled
     >
       <View>
         {displayedIcon}

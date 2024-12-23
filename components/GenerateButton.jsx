@@ -22,6 +22,7 @@ export default function GenerateButton({
         style,
       ]}
       onPress={isEnabled && !isLoading ? onPress : null}
+      pointerEvents={isEnabled ? "auto" : "none"} // Disable interaction when not enabled
     >
       <View>
         {isLoading ? (

@@ -49,12 +49,14 @@ export default function ResponseSection({
           <TouchableOpacity
             style={[s.button, s.leftButton]}
             onPress={handleClearResponse}
+            pointerEvents={'auto'}
           >
             <FontAwesome6 name="arrow-rotate-left" size={20} color="#184EAD" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[s.button, s.rightButton]}
             onPress={handleCopyToClipboard}
+            pointerEvents={'auto'}
           >
             <FontAwesome6 name="clipboard" size={20} color="#184EAD" />
           </TouchableOpacity>
