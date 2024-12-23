@@ -1,5 +1,6 @@
 import {
   Keyboard,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -29,11 +30,13 @@ import { Message } from "../components/Message";
 
 export default function Index() {
   const [inputText, setInputText] = useState(""); // State to store input
-  const [response, setResponse] = useState("The generated citation will appear here."); // State to store API response
+  const [response, setResponse] = useState(
+    "The generated citation will appear here."
+  ); // State to store API response
   const [fileUri, setFileUri] = useState(null); // Handles both images and files
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [message, setMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const showMessage = (text, color) => {
     setMessage({ text, color });
@@ -51,14 +54,14 @@ export default function Index() {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
     console.log("File URI:", fileUri);
-  
+
     setIsLoading(true); // Set loading to true when the function starts
-  
+
     try {
       if (fileUri) {
         const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
         console.log("Is PDF:", isPDF);
-  
+
         await handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
       } else {
         await handleGenerateCitation(inputText, setResponse, false); // Text input
@@ -71,64 +74,96 @@ export default function Index() {
   };
 
   if (isCameraOpen) {
-    return  <CameraScreen onPictureTaken={handleCapture} onClose={closeCamera} />;
+    return (
+      <CameraScreen onPictureTaken={handleCapture} onClose={closeCamera} />
+    );
   }
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={s.safeAreaContainer}>
-          {message && (
+          <View style={s.contentWrapper}>
+            {message && (
               <Message
                 message={message.text}
                 color={message.color}
                 onHide={() => setMessage(null)} // Hide message after duration
               />
             )}
-          <View style={s.titleContainer}>
-            <Text style={[globalStyle.titleText]}>Bluebook Citations</Text>
-            {/* <View style={s.divider}/> */}
-          </View>
-          {/* <View style={s.instructionsContainer}>
+            <View style={s.titleContainer}>
+              <Text style={[globalStyle.titleText]}>Bluebook Citations</Text>
+              {/* <View style={s.divider}/> */}
+            </View>
+            {/* <View style={s.instructionsContainer}>
             <Text style={globalStyle.text}>
               Instructions: These are the instructions for using the app. And
               this is an example of what to put in. This is an example of the
               response you'll get back.{" "}
             </Text>
           </View> */}
-          <ResponseSection response={response} setResponse={setResponse} showMessage={showMessage} setFileUri={setFileUri} setInputText={setInputText}/>
-          {/* <View style={s.divider}/> */}
-          
-          <Text style={[globalStyle.text, {paddingBottom: 4, alignSelf: 'flex-start'}]}>Enter details:</Text>
-          <TextInputField onTextChange={setInputText} value={inputText} isEnabled={!fileUri}/>
-          <Text style={[globalStyle.text, {paddingTop: 8, paddingBottom: 4, alignSelf: 'flex-start'}]}>Or upload an image of the cover:</Text>
-          <View style={s.uploadContainer}>
-            <UploadButton
-              option={"camera"}
-              isEnabled={!inputText.trim()}
-              onPress={openCamera}
+            <ResponseSection
+              response={response}
+              setResponse={setResponse}
+              showMessage={showMessage}
+              setFileUri={setFileUri}
+              setInputText={setInputText}
             />
-            <UploadButton
-              option={"photo"}
-              isEnabled={!inputText.trim()}
-              onPress={() => handleSelectPhoto(setFileUri)}
+            {/* <View style={s.divider}/> */}
+
+            <Text
+              style={[
+                globalStyle.text,
+                { paddingBottom: 4, alignSelf: "flex-start" },
+              ]}
+            >
+              Enter details:
+            </Text>
+            <TextInputField
+              onTextChange={setInputText}
+              value={inputText}
+              isEnabled={!fileUri}
             />
-            {/* <UploadButton
+            <Text
+              style={[
+                globalStyle.text,
+                { paddingTop: 8, paddingBottom: 4, alignSelf: "flex-start" },
+              ]}
+            >
+              Or upload an image of the cover:
+            </Text>
+            <View style={s.uploadContainer}>
+              <UploadButton
+                option={"camera"}
+                isEnabled={!inputText.trim()}
+                onPress={openCamera}
+              />
+              <UploadButton
+                option={"photo"}
+                isEnabled={!inputText.trim()}
+                onPress={() => handleSelectPhoto(setFileUri)}
+              />
+              {/* <UploadButton
               option={"file"}
               isEnabled={!inputText.trim()}
               onPress={() => handleSelectFile(setFileUri)}
             /> */}
+            </View>
+            <View style={s.fileNameContainer}>
+              <Text style={globalStyle.text}>{getFileName(fileUri)}</Text>
+            </View>
+            <GenerateButton
+              btnText={"Generate Citation"}
+              isEnabled={(inputText.trim() !== "" || fileUri) && !isLoading}
+              onPress={handleGenerate}
+              isLoading={isLoading} // Pass loading state to show spinner
+            />
           </View>
-          <View style={s.fileNameContainer}>
-            <Text style={globalStyle.text}>{getFileName(fileUri)}</Text>
-          </View>
-          <GenerateButton
-            btnText={"Generate Citation"}
-            isEnabled={(inputText.trim() !== "" || fileUri) && !isLoading}
-            onPress={handleGenerate}
-            isLoading={isLoading} // Pass loading state to show spinner
-          />
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </SafeAreaProvider>
@@ -138,12 +173,24 @@ export default function Index() {
 const s = StyleSheet.create({
   safeAreaContainer: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "#DAE1E5",
+    // alignItems: "center",
+    // padding: 8,
+  },
+  contentWrapper: {
+    alignItems: "center",
+    width: '100%',
     padding: 8,
+    flex: 1,
+    ...(Platform.OS === "web" && {
+      maxWidth: 800, // Limit width for web
+      marginHorizontal: "auto", // Center horizontally on web
+      paddingHorizontal: 16, // Add padding on web
+    }),
   },
   titleContainer: {
     paddingTop: 8,
+    // width: 1000
     // paddingBottom: 4,
   },
   divider: {
@@ -161,7 +208,7 @@ const s = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     marginHorizontal: -4,
-    alignSelf: 'stretch'
+    alignSelf: "stretch",
     // paddingVertical: 16,
     // width: '100%',
   },
