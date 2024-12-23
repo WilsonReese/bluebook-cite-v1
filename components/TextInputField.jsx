@@ -1,9 +1,10 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { Platform, StyleSheet, TextInput, View } from "react-native";
 import globalStyle from "../utils/styles";
 import { useState } from "react";
 
 
 export default function TextInputField({onTextChange, value, isEnabled}) {
+  const isWeb = Platform.OS === "web"; // Check if the platform is web
 
   return (
     <View style={[s.inputContainer, !isEnabled && s.disabledInputContainer]}>
@@ -13,7 +14,9 @@ export default function TextInputField({onTextChange, value, isEnabled}) {
         placeholderTextColor="#B8C3CC"
         value={value}
         onChangeText={onTextChange}
-        editable={isEnabled}
+        editable={isEnabled} // Control editability
+        keyboardType={isWeb ? "default" : "ascii-capable"} // Ensure keyboard compatibility for web
+        accessibilityRole={isWeb ? "textbox" : undefined} // Explicit role for web
       />
     </View>
   );
@@ -36,5 +39,6 @@ const s = StyleSheet.create({
   },
 	textInput: {
     flex: 1,
+    outlineStyle: "none",
   },
 });

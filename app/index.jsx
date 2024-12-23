@@ -1,6 +1,7 @@
 import {
   Keyboard,
   Platform,
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -11,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { handleGenerateCitation } from "../utils/api";
 import TextInputField from "../components/TextInputField";
@@ -86,7 +87,7 @@ export default function Index() {
         backgroundColor="transparent"
         translucent
       />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Pressable style={s.pressable} onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss}> 
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.contentWrapper}>
             {message && (
@@ -165,12 +166,15 @@ export default function Index() {
             />
           </View>
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </SafeAreaProvider>
   );
 }
 
 const s = StyleSheet.create({
+  pressable: {
+    flex: 1,
+  },
   safeAreaContainer: {
     flex: 1,
     backgroundColor: "#DAE1E5",
@@ -179,7 +183,7 @@ const s = StyleSheet.create({
   },
   contentWrapper: {
     alignItems: "center",
-    width: '100%',
+    width: "100%",
     padding: 8,
     flex: 1,
     ...(Platform.OS === "web" && {
