@@ -55,17 +55,26 @@ export default function Index() {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
     console.log("File URI:", fileUri);
-
+  
     setIsLoading(true); // Set loading to true when the function starts
-
+  
     try {
       if (fileUri) {
-        const isPDF = fileUri.toLowerCase().endsWith(".pdf"); // Check if the file is a PDF
+        let isPDF = false;
+  
+        // Check if fileUri is a string or object
+        if (typeof fileUri === "string") {
+          isPDF = fileUri.toLowerCase().endsWith(".pdf");
+        } else if (fileUri?.name) {
+          isPDF = fileUri.name.toLowerCase().endsWith(".pdf");
+        }
+  
         console.log("Is PDF:", isPDF);
-
-        await handleGenerateCitation(fileUri, setResponse, true, isPDF); // Pass `isPDF` flag
+  
+        // Pass the fileUri object or string to the API
+        await handleGenerateCitation(fileUri, setResponse, true, isPDF); 
       } else {
-        await handleGenerateCitation(inputText, setResponse, false); // Text input
+        await handleGenerateCitation(inputText, setResponse, false); // Handle text input
       }
     } catch (error) {
       console.error("Error generating citation:", error);
@@ -73,6 +82,7 @@ export default function Index() {
       setIsLoading(false); // Reset loading to false after the API call completes
     }
   };
+  
 
   if (isCameraOpen) {
     return (
