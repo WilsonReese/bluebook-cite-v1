@@ -176,7 +176,9 @@ export default function Index() {
             <View style={s.fileNameContainer}>
               <Text style={globalStyle.text}>
                 {fileUri
-                  ? `${getFileName(fileUri)} (${fileSize} KB)`
+                  ? fileSize !== null
+                    ? `${getFileName(fileUri)} (${fileSize} KB)`
+                    : getFileName(fileUri) // Only display the file name if size is null
                   : "No file selected"}
               </Text>
             </View>

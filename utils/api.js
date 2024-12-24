@@ -4,19 +4,35 @@ import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import FormData from "form-data";
 
-async function uploadFile(uri, fileType) {
+async function uploadFile(fileData, fileType) {
   try {
     const formData = new FormData();
 
-    if (typeof uri === "object" && uri.uri && uri.name && uri.type) {
-      // Fetch the Blob for the web `blob:` URI
-      const response = await fetch(uri.uri);
-      const blob = await response.blob();
+    if (typeof fileData === "object" && fileData.uri && fileData.name && fileData.type) {
+      // Handle standard file object
+      console.log("Handling standard file object:");
+      console.log(fileData);
 
-      formData.append("file", blob, uri.name);
-    } else if (typeof uri === "string") {
       formData.append("file", {
-        uri,
+        uri: fileData.uri,
+        name: fileData.name,
+        type: fileData.type,
+      });
+    } else if (typeof fileData === "string" && fileData.startsWith("data:image/")) {
+      // Handle Base64 image data
+      console.log("Handling Base64 image data:");
+
+      const base64Data = fileData.split(",")[1]; // Extract Base64 data
+      const blob = new Blob([Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0))], {
+        type: "image/jpeg", // Default type; adjust as needed
+      });
+
+      formData.append("file", blob, "image.jpg");
+    } else if (typeof fileData === "string") {
+      // Handle mobile file URI
+      console.log("Handling mobile file URI:");
+      formData.append("file", {
+        uri: fileData,
         name: fileType === "pdf" ? "document.pdf" : "image.jpg",
         type: fileType === "pdf" ? "application/pdf" : "image/jpeg",
       });
