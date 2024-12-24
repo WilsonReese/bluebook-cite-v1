@@ -34,7 +34,7 @@ async function uploadFile(uri, fileType) {
 }
 
 export async function handleGenerateCitation(input, setResponse, isFile = false, isPDF = false) {
-  if (!input.trim() && !isFile) {
+  if (!isFile && (typeof input !== "string" || input.trim() === "")) {
     setResponse("Please enter text or upload a file to generate a citation.");
     return;
   }
