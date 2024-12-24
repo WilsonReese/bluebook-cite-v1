@@ -1,8 +1,9 @@
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { Platform } from "react-native";
+// import * as FileSystem from "expo-file-system";
 
-export const handleSelectPhoto = async (setFileUri) => {
+export const handleSelectPhoto = async (setFileUri, setFileSize) => {
   try {
     if (Platform.OS === "web") {
       // Web-specific file picker logic
@@ -12,10 +13,19 @@ export const handleSelectPhoto = async (setFileUri) => {
       input.onchange = async (event) => {
         const file = event.target.files[0];
         if (file) {
+          const fileSize = file.size; // File size in bytes
+          console.log("Selected file size:", fileSize);
+
+          // Limit file size to 1 MB (1 MB = 1048576 bytes)
+          if (fileSize > 1048576) {
+            alert("File size exceeds 1 MB. Please select a smaller file.");
+            return;
+          }
+
           const blob = await file.arrayBuffer();
           const fileUri = URL.createObjectURL(new Blob([blob], { type: file.type }));
-          console.log("Selected file:", file);
-          setFileUri({ uri: fileUri, name: file.name, type: file.type }); // Save file details
+          setFileUri({ uri: fileUri, name: file.name, type: file.type });
+          setFileSize((fileSize / 1024).toFixed(2)); // Set file size in KB
         }
       };
       input.click();
@@ -42,7 +52,21 @@ export const handleSelectPhoto = async (setFileUri) => {
       });
 
       if (!result.canceled) {
-        setFileUri(result.assets[0].uri);
+        const uri = result.assets[0].uri;
+
+        // Get file size on mobile
+        const info = await FileSystem.getInfoAsync(uri);
+        const fileSize = info.size; // File size in bytes
+        console.log("Selected file size:", fileSize);
+
+        // Limit file size to 1 MB
+        // if (fileSize > 3145728) {
+        //   alert("File size exceeds 3 MB. Please select a smaller file.");
+        //   return;
+        // }
+
+        setFileUri(uri);
+        setFileSize((fileSize / 1024).toFixed(2)); // Set file size in KB
       }
     }
   } catch (error) {

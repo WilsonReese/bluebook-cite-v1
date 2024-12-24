@@ -38,6 +38,7 @@ export default function Index() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [fileSize, setFileSize] = useState(null); // Add file size state
 
   const showMessage = (text, color) => {
     setMessage({ text, color });
@@ -55,24 +56,24 @@ export default function Index() {
     console.log("handleGenerate invoked");
     console.log("Input Text:", inputText);
     console.log("File URI:", fileUri);
-  
+
     setIsLoading(true); // Set loading to true when the function starts
-  
+
     try {
       if (fileUri) {
         let isPDF = false;
-  
+
         // Check if fileUri is a string or object
         if (typeof fileUri === "string") {
           isPDF = fileUri.toLowerCase().endsWith(".pdf");
         } else if (fileUri?.name) {
           isPDF = fileUri.name.toLowerCase().endsWith(".pdf");
         }
-  
+
         console.log("Is PDF:", isPDF);
-  
+
         // Pass the fileUri object or string to the API
-        await handleGenerateCitation(fileUri, setResponse, true, isPDF); 
+        await handleGenerateCitation(fileUri, setResponse, true, isPDF);
       } else {
         await handleGenerateCitation(inputText, setResponse, false); // Handle text input
       }
@@ -82,7 +83,6 @@ export default function Index() {
       setIsLoading(false); // Reset loading to false after the API call completes
     }
   };
-  
 
   if (isCameraOpen) {
     return (
@@ -97,7 +97,11 @@ export default function Index() {
         backgroundColor="transparent"
         translucent
       />
-      <Pressable style={[s.pressable, Platform.OS === "web" && { cursor: "default" }]} onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss} pointerEvents="box-none"> 
+      <Pressable
+        style={[s.pressable, Platform.OS === "web" && { cursor: "default" }]}
+        onPress={Platform.OS === "web" ? undefined : Keyboard.dismiss}
+        pointerEvents="box-none"
+      >
         <SafeAreaView style={s.safeAreaContainer}>
           <View style={s.contentWrapper}>
             {message && (
@@ -158,7 +162,7 @@ export default function Index() {
               <UploadButton
                 option={"photo"}
                 isEnabled={!inputText.trim()}
-                onPress={() => handleSelectPhoto(setFileUri)}
+                onPress={() => handleSelectPhoto(setFileUri, setFileSize)}
               />
               {/* <UploadButton
               option={"file"}
@@ -166,8 +170,15 @@ export default function Index() {
               onPress={() => handleSelectFile(setFileUri)}
             /> */}
             </View>
-            <View style={s.fileNameContainer}>
+            {/* <View style={s.fileNameContainer}>
               <Text style={globalStyle.text}>{getFileName(fileUri)}</Text>
+            </View> */}
+            <View style={s.fileNameContainer}>
+              <Text style={globalStyle.text}>
+                {fileUri
+                  ? `${getFileName(fileUri)} (${fileSize} KB)`
+                  : "No file selected"}
+              </Text>
             </View>
             <GenerateButton
               btnText={"Generate Citation"}
