@@ -3,7 +3,7 @@ import globalStyle from "../utils/styles";
 import { useState } from "react";
 
 
-export default function TextInputField({onTextChange, value, isEnabled}) {
+export default function TextInputField({onTextChange, value, isEnabled, onSubmit}) {
   const isWeb = Platform.OS === "web"; // Check if the platform is web
 
   return (
@@ -18,6 +18,8 @@ export default function TextInputField({onTextChange, value, isEnabled}) {
         keyboardType={isWeb ? "default" : "ascii-capable"} // Ensure keyboard compatibility for web
         accessibilityRole={isWeb ? "textbox" : undefined} // Explicit role for web
         pointerEvents={isEnabled ? "auto" : "none"} // Disable interaction when not enabled
+        onSubmitEditing={onSubmit} // Trigger the function when "Enter"/"Return" is pressed
+        returnKeyType='done' // Show "Done" button on mobile keyboards
       />
     </View>
   );

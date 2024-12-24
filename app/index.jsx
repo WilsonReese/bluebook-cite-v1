@@ -129,6 +129,7 @@ export default function Index() {
               onTextChange={setInputText}
               value={inputText}
               isEnabled={!fileUri}
+              onSubmit={handleGenerate}
             />
             <Text
               style={[
