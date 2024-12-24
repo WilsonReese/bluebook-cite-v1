@@ -1,6 +1,7 @@
 import {
   Alert,
   FlatList,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -32,8 +33,33 @@ export default function ResponseSection({
 
   const handleCopyToClipboard = async () => {
     try {
-      const plainText = RemoveMarkdown(response); // Strip Markdown formatting
-      await Clipboard.setStringAsync(plainText); // Copy plain text to clipboard
+      if (Platform.OS === "web") {
+        // Convert Markdown to HTML
+        const markdownToHtml = (markdown) => {
+          const md = new MarkdownIt(); // Instantiate markdown-it
+          return md.render(markdown);
+        };
+  
+        const htmlContent = markdownToHtml(response);
+  
+        // Create a temporary HTML element to copy HTML content
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = htmlContent;
+  
+        // Use Clipboard API to write both plain text and HTML
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "text/plain": new Blob([response], { type: "text/plain" }), // Markdown as plain text
+            "text/html": new Blob([htmlContent], { type: "text/html" }), // HTML for rich text editors
+          }),
+        ]);
+  
+        showMessage("Copied with formatting", "#0C9449");
+      } else {
+        // Copy plain text for mobile
+        const plainText = RemoveMarkdown(response); // Strip Markdown formatting
+        await Clipboard.setStringAsync(plainText); // Copy plain text to clipboard
+      }
       showMessage("Copied", "#0C9449");
     } catch (error) {
       console.error("Error copying to clipboard:", error);
