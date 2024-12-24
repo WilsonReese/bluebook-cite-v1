@@ -9,24 +9,26 @@ async function uploadFile(fileData, fileType) {
     const formData = new FormData();
 
     if (typeof fileData === "object" && fileData.uri && fileData.name && fileData.type) {
-      // Handle standard file object
+      // Handle standard file object (e.g., from mobile camera or file picker on web)
       console.log("Handling standard file object:");
       console.log(fileData);
+      console.log("Object detected (Web)");
 
-      formData.append("file", {
-        uri: fileData.uri,
-        name: fileData.name,
-        type: fileData.type,
-      });
+      // Fetch the Blob for the web `blob:` URI
+      const response = await fetch(fileData.uri);
+      const blob = await response.blob();
+
+      formData.append("file", blob, fileData.name);
     } else if (typeof fileData === "string" && fileData.startsWith("data:image/")) {
       // Handle Base64 image data
       console.log("Handling Base64 image data:");
 
       const base64Data = fileData.split(",")[1]; // Extract Base64 data
-      const blob = new Blob([Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0))], {
-        type: "image/jpeg", // Default type; adjust as needed
-      });
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
 
+      const blob = new Blob([byteArray], { type: "image/jpeg" }); // Default type; adjust as needed
       formData.append("file", blob, "image.jpg");
     } else if (typeof fileData === "string") {
       // Handle mobile file URI
@@ -62,6 +64,7 @@ async function uploadFile(fileData, fileType) {
     throw new Error("Failed to upload file.");
   }
 }
+
 
 export async function handleGenerateCitation(input, setResponse, isFile = false, isPDF = false) {
   if (!isFile && (typeof input !== "string" || input.trim() === "")) {

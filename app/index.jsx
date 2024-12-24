@@ -128,6 +128,7 @@ export default function Index() {
               showMessage={showMessage}
               setFileUri={setFileUri}
               setInputText={setInputText}
+              setFileSize={setFileSize}
             />
             {/* <View style={s.divider}/> */}
 

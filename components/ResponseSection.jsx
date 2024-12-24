@@ -22,12 +22,14 @@ export default function ResponseSection({
   showMessage,
   setFileUri,
   setInputText,
+  setFileSize,
 }) {
   const handleClearResponse = () => {
     setResponse("The generated citation will appear here."); // Clear the response
     showMessage("Reset", "#0C9449");
     setFileUri(null);
     setInputText("");
+    setFileSize(null)
     // Alert.alert("Cleared", "The response has been cleared.");
   };
 
