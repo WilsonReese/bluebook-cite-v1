@@ -7,12 +7,26 @@ import FormData from "form-data";
 async function uploadFile(uri, fileType) {
   try {
     const formData = new FormData();
-    formData.append("file", {
-      uri,
-      name: fileType === "pdf" ? "document.pdf" : "image.jpg",
-      type: fileType === "pdf" ? "application/pdf" : "image/jpeg",
-    });
+
+    if (typeof uri === "object" && uri.uri && uri.name && uri.type) {
+      // Fetch the Blob for the web `blob:` URI
+      const response = await fetch(uri.uri);
+      const blob = await response.blob();
+
+      formData.append("file", blob, uri.name);
+    } else if (typeof uri === "string") {
+      formData.append("file", {
+        uri,
+        name: fileType === "pdf" ? "document.pdf" : "image.jpg",
+        type: fileType === "pdf" ? "application/pdf" : "image/jpeg",
+      });
+    } else {
+      throw new Error("Invalid file input");
+    }
+
     formData.append("purpose", "assistants"); // Purpose specific to Assistant API
+
+    console.log("FormData before upload:", formData);
 
     const uploadRes = await axios.post(
       "https://api.openai.com/v1/files",
@@ -126,7 +140,8 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
       );
 
       const messages = messagesRes.data.data;
-      console.log("Messages", messages);
+      // console.log("Messages", messages);
+      console.log("Polling Response:", messagesRes.data);
 
       assistantMessage = messages.find(
         (msg) => msg.role === "assistant" && msg.content?.length > 0
