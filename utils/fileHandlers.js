@@ -1,7 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import { Platform } from "react-native";
-// import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system";
 
 export const handleSelectPhoto = async (setFileUri, setFileSize) => {
   try {
