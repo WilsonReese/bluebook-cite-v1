@@ -108,7 +108,15 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
                   },
                 ],
               }
-          : { role: "user", content: input }, // Text input remains a string
+          : {
+            role: "user",
+            content: [
+              {
+                type: "text", // Use 'text' type for regular input
+                text: input, // Include the actual input text
+              },
+            ],
+          },
       ],
     };
 
