@@ -10,6 +10,11 @@ const globalStyle = StyleSheet.create({
     fontFamily: "STIXTwoText_700Bold",
     color: '#184EAD'
   },
+  headerText: {
+    fontSize: 20,
+    fontFamily: "STIXTwoText_700Bold",
+    color: '#184EAD'
+  }
 });
 
 export default globalStyle;

@@ -131,57 +131,61 @@ export default function Index() {
               setFileSize={setFileSize}
             />
             {/* <View style={s.divider}/> */}
-
-            <Text
-              style={[
-                globalStyle.text,
-                { paddingBottom: 4, alignSelf: "flex-start" },
-              ]}
-            >
-              Enter details:
-            </Text>
-            <TextInputField
-              onTextChange={setInputText}
-              value={inputText}
-              isEnabled={!fileUri}
-              onSubmit={handleGenerate}
-            />
-            <Text
-              style={[
-                globalStyle.text,
-                { paddingTop: 8, paddingBottom: 4, alignSelf: "flex-start" },
-              ]}
-            >
-              Or upload an image of the cover:
-            </Text>
-            <View style={s.uploadContainer}>
-              <UploadButton
-                option={"camera"}
-                isEnabled={!inputText.trim()}
-                onPress={openCamera}
+            <View style={s.sourceContainer}>
+              <View style={s.sourceHeaderContainer}>
+              <Text style={globalStyle.headerText}>Source Information</Text>
+              </View>
+              <Text
+                style={[
+                  globalStyle.text,
+                  { paddingBottom: 4, alignSelf: "flex-start" },
+                ]}
+              >
+                Enter details:
+              </Text>
+              <TextInputField
+                onTextChange={setInputText}
+                value={inputText}
+                isEnabled={!fileUri}
+                onSubmit={handleGenerate}
               />
-              <UploadButton
-                option={"photo"}
-                isEnabled={!inputText.trim()}
-                onPress={() => handleSelectPhoto(setFileUri, setFileSize)}
-              />
-              {/* <UploadButton
+              <Text
+                style={[
+                  globalStyle.text,
+                  { paddingTop: 8, paddingBottom: 4, alignSelf: "flex-start" },
+                ]}
+              >
+                Or upload an image of the title page:
+              </Text>
+              <View style={s.uploadContainer}>
+                <UploadButton
+                  option={"camera"}
+                  isEnabled={!inputText.trim()}
+                  onPress={openCamera}
+                />
+                <UploadButton
+                  option={"photo"}
+                  isEnabled={!inputText.trim()}
+                  onPress={() => handleSelectPhoto(setFileUri, setFileSize)}
+                />
+                {/* <UploadButton
               option={"file"}
               isEnabled={!inputText.trim()}
               onPress={() => handleSelectFile(setFileUri)}
             /> */}
-            </View>
-            {/* <View style={s.fileNameContainer}>
+              </View>
+              {/* <View style={s.fileNameContainer}>
               <Text style={globalStyle.text}>{getFileName(fileUri)}</Text>
             </View> */}
-            <View style={s.fileNameContainer}>
-              <Text style={globalStyle.text}>
-                {fileUri
-                  ? fileSize !== null
-                    ? `${getFileName(fileUri)} (${fileSize} KB)`
-                    : getFileName(fileUri) // Only display the file name if size is null
-                  : "No file selected"}
-              </Text>
+              <View style={s.fileNameContainer}>
+                <Text style={globalStyle.text}>
+                  {fileUri
+                    ? fileSize !== null
+                      ? `${getFileName(fileUri)} (${fileSize} KB)`
+                      : getFileName(fileUri) // Only display the file name if size is null
+                    : "No file selected"}
+                </Text>
+              </View>
             </View>
             <GenerateButton
               btnText={"Generate Citation"}
@@ -232,6 +236,17 @@ const s = StyleSheet.create({
   instructionsContainer: {
     paddingVertical: 16,
   },
+  sourceContainer: {
+    // backgroundColor: 'green',
+    // borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#B8C3CC',
+    alignSelf: 'stretch',
+    paddingVertical: 8,
+  },
+  sourceHeaderContainer: {
+    alignItems: 'center',
+  },
   uploadContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -244,6 +259,7 @@ const s = StyleSheet.create({
   fileNameContainer: {
     // flex: 1,
     padding: 8,
+    alignItems: 'center'
     // backgroundColor: "#f0f0f0",
   },
 });
