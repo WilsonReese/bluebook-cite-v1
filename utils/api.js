@@ -84,48 +84,42 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
       console.log("Uploaded File ID:", file_id);
     }
 
-    const threadPayload = {
-      messages: [
-        isFile
-          ? isPDF
-            ? {
-                role: "user",
-                content: [
-                  {
-                    type: "text", // Use 'text' type for PDFs
-                    text: file_id, // Directly use the uploaded file_id as the text
-                  },
-                ],
-              }
-            : {
-                role: "user",
-                content: [
-                  {
-                    type: "image_file",
-                    image_file: {
-                      file_id, // Use the uploaded file ID
-                    },
-                  },
-                ],
-              }
-          : {
+    const messagePayload = isFile
+      ? isPDF
+        ? {
             role: "user",
             content: [
               {
-                type: "text", // Use 'text' type for regular input
-                text: input, // Include the actual input text
+                type: "text",
+                text: file_id,
               },
             ],
-          },
-      ],
-    };
-
-    console.log("Thread Payload:", JSON.stringify(threadPayload, null, 2));
+          }
+        : {
+            role: "user",
+            content: [
+              {
+                type: "image_file",
+                image_file: {
+                  file_id,
+                },
+              },
+            ],
+          }
+      : {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: input,
+            },
+          ],
+        };
 
     // Step 1: Create the thread
     const threadRes = await axios.post(
       "https://api.openai.com/v1/threads",
-      threadPayload,
+      {},
       {
         headers: {
           Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
@@ -138,7 +132,22 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
     const threadId = threadRes.data.id;
     console.log("Thread ID:", threadId);
 
-    // Step 2: Engage Assistant API (start the run)
+    // Step 2: Add the message
+    const messageRes = await axios.post(
+      `https://api.openai.com/v1/threads/${threadId}/messages`,
+      messagePayload,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_OPENAI_SECRET_KEY}`,
+          "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2",
+        },
+      }
+    );
+
+    console.log("Message Added:", messageRes.data);
+
+    // Step 3: Run the thread
     const runRes = await axios.post(
       `https://api.openai.com/v1/threads/${threadId}/runs`,
       { assistant_id: `${process.env.EXPO_PUBLIC_ASSISTANT_ID}` },
@@ -151,9 +160,9 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
       }
     );
 
-    console.log("Step 2 complete");
+    console.log("Thread Run Started:", runRes.data);
 
-    // Step 3: Poll for the response
+    // Step 4: Poll for the response
     let assistantMessage;
     while (true) {
       const messagesRes = await axios.get(
@@ -167,7 +176,6 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
       );
 
       const messages = messagesRes.data.data;
-      // console.log("Messages", messages);
       console.log("Polling Response:", messagesRes.data);
 
       assistantMessage = messages.find(
@@ -179,9 +187,9 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Poll every second
     }
 
-    console.log("Step 3 complete");
+    console.log("Assistant Response Received");
 
-    // Step 4: Extract the assistant's response
+    // Step 5: Extract the assistant's response
     const contentText = assistantMessage.content.find(
       (item) => item.type === "text"
     );
@@ -194,6 +202,7 @@ export async function handleGenerateCitation(input, setResponse, isFile = false,
     setResponse("Failed to generate citation. Please try again.");
   }
 }
+
 
 // // Try 1 - Only works or images - no PDF support
 
