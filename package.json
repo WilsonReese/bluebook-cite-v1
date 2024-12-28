@@ -2,7 +2,6 @@
   "name": "bluebook-cite-v1",
   "main": "expo-router/entry",
   "version": "1.0.0",
-  "homepage": "https://wilsonreese.github.io/bluebook-cite-v1",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -11,8 +10,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "predeploy": "expo export:web && cp -R web-build/* build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages --nojekyll -d dist",
+    "predeploy": "expo export -p web"  
   },
   "jest": {
     "preset": "jest-expo"
@@ -24,7 +23,7 @@
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "axios": "^1.7.9",
-    "expo": "~52.0.19",
+    "expo": "^52.0.23",
     "expo-app-loading": "^2.1.1",
     "expo-blur": "~14.0.1",
     "expo-camera": "^16.0.10",
